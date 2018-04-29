@@ -1,0 +1,2132 @@
+<html lang="en">
+    <head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link href="css/acod.css" rel="stylesheet">
+
+		<!--<script src="https://code.jquery.com/jquery-1.12.4.js"></script>-->
+        <script src="js/jquery-3.1.1.js"></script>
+		<script src="js/advconfig.js"></script>
+        <script src="js/advpane.js"></script>
+        <script src="js/advajax.js"></script>
+        <script src="js/advgrid.js"></script>
+        <!--<script src="js/advdecl.js"></script>-->
+        <!--<script src="js/advbtn.js"></script>-->
+        <script src="js/advassist.js"></script>
+		<script src="dist/js/bootstrap.js"></script>
+		<link href="dist/css/bootstrap.min.css" rel="stylesheet">
+		<script type="text/javascript">
+		    function I1_print() {
+                var request = advAjaxGetRequest("query");
+                alert('姓名 := ' + request["I1_name"] + "\n" + '電話 = ' + request["I1_phone"] + "\n" + '地址 = ' + request["I1_addr"]);
+		    };
+
+		    var I2_data =
+		        [
+		          { 'I2_name':'TOM'
+		          , 'I2_phone':'12345678'
+		          , 'I2_addr':'New 9RD Taipei'}
+		        , { 'I2_name':'SAM'
+		          , 'I2_phone':'87654321'
+		          , 'I2_addr':'No.2, Yongkang St Taipei'}
+		        ]
+		   ;
+
+		    function I2_example(Scenario) {
+		        var request = advAjaxGetRequest(Scenario);
+		        if (Scenario == "query") {
+		            var query;
+		            for (var i = 0 ; i < I2_data.length ; i++)
+		            {
+		                if (I2_data[i] && I2_data[i].I2_name == request["I2_name"]) {
+		                    query = I2_data[i];
+		                }
+		            }
+		            if (query) {
+		                advAjaxSetResponse("query", query);
+                        advConfigShowErrorMessage("查詢成功", 0);
+                    }
+                    else
+                        advConfigShowErrorMessage("查無資料", -1);
+		        }
+		        else if (Scenario == "add") {
+		            var i = I2_data.length;
+		            I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
+                    advConfigShowErrorMessage("新增完成", 0);
+		        }
+                else if (Scenario == "update") {
+                    advConfigShowErrorMessage("無更新資料", -1);
+                    for (var i = 0 ; i < I2_data.length ; i++)
+		            {
+		                if (I2_data[i] && I2_data[i].I2_name == request["I2_name"]) {
+		                    I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
+                            advConfigShowErrorMessage("更新完成", 0);
+                            return false;
+		                }
+		            }
+                }
+                else if (Scenario == "delete") {
+                    advConfigShowErrorMessage("無刪除資料", -1);
+                    for (var i = 0 ; i < I2_data.length ; i++)
+		            {
+		                if (I2_data[i].I2_name == request["I2_name"]) {
+		                    delete I2_data[i];
+                            advAjaxSetResponse("delete", request);
+                            advConfigShowErrorMessage("刪除完成", 0);
+                            return false;
+		                }
+		            }
+                }
+		    }
+
+            var I3_data = [{'key':'Taipei','value':'台北'},{'key':'Taoyuan','value':'桃園'},{'key':'NewNorthCity','value':'新北市'}];
+            var I3_data2 = {'Taipei':['大同區','大安區','萬華區']
+                           ,'Taoyuan':['桃園區','大溪區','中壢區']
+                           ,'NewNorthCity':['永和區','板橋區','新店區']};
+
+		    function I3_example(Scenario) {
+		        var request = advAjaxGetRequest(Scenario);
+		        var response = {};
+		        if (Scenario == "setRead") {
+		            response = request;
+		        }
+		        if (Scenario == "setSRead") {
+		            response["I3_nameRead"] = 1;
+		        }
+		        if (Scenario == "setColor") {
+		            if (request["I3_color"])
+		                response["I3_colorBgColor"] = request["I3_color"];
+		        }
+		        if (Scenario == "setBlackColor") {
+                    response["I3_colorBgColor"] = "black";
+		        }
+		        if (Scenario == "setList") {
+		            response["I3_selectList"] = I3_data;
+		            if (request["I3_select"] && I3_data2[request["I3_select"]]) {
+		                response["I3_selectList"] = I3_data2[request["I3_select"]];
+		            }
+		        }
+
+		        advAjaxSetResponse(Scenario, response);
+		    }
+
+		    function I5_example(Scenario) {
+		        var errList = advConfigCheck(Scenario);
+		        advConfigShowErrorMessage(advConfigPutErrorMessage(errList), -1);
+		    }
+
+            function I6_example(Scenario) {
+                var request = advAjaxGetRequest(Scenario);
+                alert('decl_no = ' + request["I6_declno"]);
+            }
+
+            function I8_example(Scenario) {
+                advConfigAttr(Scenario);
+            }
+
+            function I9_example(Scenario) {
+                advConfigModCheck(Scenario, 1);
+            }
+
+            $(document).ready(function() {
+                var list = [{'':''}, {'Taipei':'台北'}, {'Taoyuan':'桃園'}, {'NewNorthCity':'新北市'}];
+		        advAjaxSetResponse("load", {'I5_chkSelectList':list});
+		        advAjaxSetResponse("load", {'I8_attrDis3List':list});
+		        advAjaxSetResponse("load", {'I9_mod3List':list, 'I9_mod3SelText':'Taoyuan'});
+		        advConfigModReset('I9_example');
+
+		    });
+            var g1_cityList = [{'Taipei':'台北市'},{'Taoyuan':'桃園市'},{'NewTaipeiCity':'新北市'}];
+
+            var g1_cityDistList = {
+                'Taipei':[{'Songshan':'松山區'},{'Xinyi':'信義區'},{'Da’an':'大安區'}]
+              , 'Taoyuan':[{'Taoyuan':'桃園區'},{'Zhongli':'中壢區'}]
+              , 'NewTaipeiCity':[{'Banqiao':'板橋區'},{'Sanchong':'三重區'},{'Zhonghe':'中和區'},{'Yonghe':'永和區'}]
+            };
+
+		    var g1_res = {'idColName':['Tom','Mary','Jack']
+		                , 'idColCity':['Taipei','Taoyuan','Taipei']
+		                , 'idColCityList':[g1_cityList, g1_cityList, g1_cityList]
+		                , 'idColDist':['Songshan','Taoyuan','Da’an']
+		                , 'idColDistList':[g1_cityDistList['Taipei'],g1_cityDistList['Taoyuan'],g1_cityDistList['Taipei']]
+		                , 'idColGender':['m','w','m']
+		                , 'idColMethA':[true,false,]
+		                , 'idColMethB':[,,true]
+		                , 'idColMethC':[,,true]
+		                , 'idColDesc':['Handsome','beautiful','xxx']
+		                , 'idColDescBgColor':[null,'red',null]
+		                , 'idBegin':0
+		                 };
+            g1_res['idCount'] = g1_res['idColName'].length;
+            g1_res['idTotal'] = g1_res['idColName'].length;
+
+            function listDist(name, Scenario, rowdata, col, ndx) {
+                var data = {'distList':g1_cityDistList[rowdata["city"]]};
+                advGridTableRowResponse(name, Scenario, ndx, data);
+            }
+
+            function onDblName(name, arg, data, col, ndx) {
+                alert("This is Col dblClick name = " + data["name"]);
+            }
+
+            function onDblTable(name, arg, data, col, ndx) {
+                alert("This is Table dblClick table[col:" + col + "] = " + data[col]);
+            }
+
+            function G1_example(Scenario) {
+                if (Scenario == 'G1_chk') {
+                    var errList = advConfigCheck(Scenario);
+                    advConfigShowErrorMessage(advConfigPutErrorMessage(errList), -1);
+                } else if (Scenario == 'G1_send') {
+                    var request = advAjaxGetRequest(Scenario);
+                    var msg;
+                    $.each(request, function(k, v) {
+                        msg += k + " = " + v + "\n";
+                    });
+
+                    alert('G1_send = ' + msg);
+                } else {
+                    advConfigAttr(Scenario);
+                }
+            }
+
+            var g2_res = {'id2ColName':['Tom','Mary','Jack','Alex','Rich']
+		                , 'id2ColDesc':['Handsome','beautiful','xxx']
+		                , 'id2Begin':0
+		                 };
+            g2_res['id2Count'] = g2_res['id2ColName'].length;
+            g2_res['id2Total'] = g2_res['id2ColName'].length;
+
+            function G2_example(Scenario) {
+                if (Scenario == 'G2_send') {
+                    var request = advAjaxGetRequest(Scenario);
+                    var msg;
+                    $.each(request, function(k, v) {
+                        msg += k + " = " + v + "\n";
+                    });
+
+                    alert('G2_send = ' + msg);
+                }
+            }
+
+            var g3_res = {'id3ColName':['Tom','Mary','Jack','Alex','Rich']
+		                , 'id3ColDesc':['Handsome','beautiful','xxx']
+		                , 'id3Begin':0
+		                 };
+            g3_res['id3Count'] = g3_res['id3ColName'].length;
+            g3_res['id3Total'] = g3_res['id3ColName'].length;
+
+            var g4_res = {'id4ColName':['Tom','Mary','Jack','Alex','Rich','Ada','Odelia','Leo','Mike','Peter','Sara','Tracy','Alan','Bart']
+		                , 'id4ColDesc':['Handsome','beautiful','xxx']
+                        , 'id4ColCity':['Taipei','Taoyuan','Taipei','NewTaipeiCity','NewTaipeiCity']
+		                , 'id4ColDist':['Songshan','Taoyuan','Da’an','Banqiao','Sanchong']
+		                , 'id4ColDistList':[g1_cityDistList['Taipei'],g1_cityDistList['Taoyuan'],g1_cityDistList['Taipei'],g1_cityDistList['NewTaipeiCity'],g1_cityDistList['NewTaipeiCity']]
+		                , 'id4Begin':0
+		                 };
+            g4_res['id4Count'] = g4_res['id4ColName'].length;
+            g4_res['id4Total'] = g4_res['id4ColName'].length;
+
+            function G4_example(Scenario) {
+                if (Scenario == 'G4_send') {
+                    var request = advAjaxGetRequest(Scenario);
+                    var msg;
+                    $.each(request, function(k, v) {
+                        msg += k + " = " + v + "\n";
+                    });
+
+                    alert('G4_send = ' + msg);
+                }
+            }
+
+		    $(document).ready(function() {
+                advAjaxSetResponse("G1_query", g1_res);
+                advAjaxSetResponse("G2_query", g2_res);
+                advAjaxSetResponse("G3_query", g3_res);
+                advAjaxSetResponse("G4_query", g4_res);
+		    });
+		</script>
+    </head>
+    <style type="text/css">
+        div .pane {
+            position: relative;
+            display: none;
+        }
+
+        .nt {
+            color:#2f6f9f;
+        }
+        .na {
+            color:#4f9fcf;
+        }
+        .s {
+            color:#d44950;
+        }
+        .highlight {
+            padding:9px 14px;
+            margin-bottom: 14px;
+            background-color: #f7f7f9;
+            border:1px solid #e1e1e8;
+            border-radius:4px;
+        }
+
+        .highlight pre{
+            padding: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            word-break: normal;
+            white-space: nowrap;
+            background-color: transparent;
+            border: 0;
+        }
+
+        .pre {
+            display: block;
+            margin:0 0 10px;
+            font-size:13px;
+            line-height; 1.42857143;
+            color: #333
+            word-wrap: break-word;
+            border-radius:4px;
+            overflow:auto;
+        }
+        .lead {
+            margin-bottom: 20px;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+        .bs-example {
+            margin-right: 0;
+            margin-left: 0;
+            background-color: #fff;
+            border-color: #ddd;
+            border-width: 1px;
+            border-radius: 4px 4px 0 0;
+            box-shadow:none;
+            position: relative;
+            padding:20px 15px 15px;
+            border-style:solid;
+        }
+        .bs-callout+.bs-callout {
+            margin-top: -5px;
+        }
+        .bs-callout {
+            padding:20px;
+            margin:20px 0;
+            border:1px solid #eee;
+            border-left-width:5px;
+            border-radius:3px;
+        }
+        .bs-callout-warning {
+            border-left-color: #f0ad4e;
+        }
+        .bs-callout-info {
+            border-left-color: #5bc0de;
+        }
+        .scrollit {
+            overflow-y: scroll;
+            overflow-x: hidden;
+            height:200px;
+            margin-bottom:20px;
+        }
+        .fixtable {
+            border:1px solid #ddd;
+            background-color: transparent;
+            border-spacing: 0;
+            border-collapse: collapse;
+            white-space: normal;
+            line-height: normal;
+            font-weight: normal;
+            font-size: medium;
+            font-style: normal;
+            color: -internal-quirk-inherit;
+            text-align: start;
+            font-variant: normal normal;
+        }
+
+        .fixtable td,
+        .fixtable th {
+            border: 1px solid #ddd !important;
+            padding: 10px;
+
+        }
+
+    </style>
+	<body>
+	    <div class="container">
+    		<h1 id="acod" class="page-header"> ACOD </h1>
+    		<p class="lead">一個可將網頁元素內容迅速收集或將response資料怖局回元素內的開發library，以jQuery為設計核心可配合使用者要求擴增更多功能。
+    		主要將網頁元素設定特定標籤及劇本，Acod會歷遍tag後依照指定的劇本對元素做處理。方便開發者可省去畫面與後端的資料收集及配置。</p>
+
+    		<h2 id="struts">acod 的結構</h2>
+    		<p>主要的程式有advconfig.js、advajax.js、advgrid.js、advpane.js，依需求配合擴增advdecl.js、advbtn.js、advassist.js。開發者在程式開頭需件js檔
+    		案載入並宣告其定義。</p>
+    		<div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advconfig.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advajax.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advgrid.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advpane.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advdecl.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advbtn.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advassist.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+<span class="nt">&lt;script</span><span class="na"> type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+    advConfigRegister();
+    advPaneRegister();
+    advAjaxRegister();
+    advGridRegister();
+    advDeclRegister();
+<span class="nt">&lt;/script</span><span class="nt">&gt;</span>
+                    </code>
+        	    </pre>
+            </div>
+
+            <h2 id="good"> ACOD的好處 </h2>
+            <p class="lead">透過advAjax將基本元素如input、textarea、select、label依照設定的劇本做取值設值的處理。</p>
+
+            <h3>範列：透過acod收集元素資訊</h3>
+            <p>先來看一段範列，我們想收集使用者資料姓名、電話、地址封裝成JSON格式，透過advajax.js提供的advAjaxGetRequest將所有input元素資料收集起來。</p>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>姓名</label>
+                            <input type="text" class="form-control" name="I1_name">
+                            <div class="acod">to:query</div>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="form-group">
+                            <label>電話</label>
+                            <input type="text" class="form-control" name="I1_phone">
+                            <div class="acod">to:query</div>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="form-group">
+                            <label>地址</label>
+
+                            <input type="text" class="form-control" name="I1_addr">
+                            <div class="acod">to:query</div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            <form role="form">
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" onclick="I1_print()">顯示收集結果</button>
+                </div>
+            </form>
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">"control-label"</span><span class="nt">&gt;</span>姓名<span class="nt">&lt;/label</span><span class="nt">&gt;</span>
+<!--<input type="text" name="I1_name">--><span class="nt">&lt;input </span><span class="na">type=</span><span class="s">"text" </span><span class="na">name=</span><span class="s">"name"</span><span class="nt">&gt;</span>
+<!--<div class="acod">to:query</div>--><span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"acod"</span> <span class="nt">&gt;</span>to:query<span class="nt">&lt;/div</span><span class="nt">&gt;</span>
+<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">"control-label"</span><span class="nt">&gt;</span>電話<span class="nt">&lt;/label</span><span class="nt">&gt;</span>
+<!--<input type="text" name="I1_phone">--><span class="nt">&lt;input </span><span class="na">type=</span><span class="s">"text" </span><span class="na">name=</span><span class="s">"phone"</span><span class="nt">&gt;</span>
+<!--<div class="acod">to:query</div>--><span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"acod"</span> <span class="nt">&gt;</span>to:query<span class="nt">&lt;/div</span><span class="nt">&gt;</span>
+<span class="nt">&lt;label</span> <span class="na">class=</span><span class="s">"control-label"</span><span class="nt">&gt;</span>地址<span class="nt">&lt;/label</span><span class="nt">&gt;</span>
+<!--<input type="text" name="I1_addr">--><span class="nt">&lt;input </span><span class="na">type=</span><span class="s">"text" </span><span class="na">name=</span><span class="s">"addr"</span><span class="nt">&gt;</span>
+<!--<div class="acod">to:query</div>--><span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"acod"</span> <span class="nt">&gt;</span>to:query<span class="nt">&lt;/div</span><span class="nt">&gt;</span>
+
+<!--<script type="text/javascript">--><span class="nt">&lt;script</span><span class="na"> type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+    <!--function I1_print() {--><span class="nt">function </span><span class="s">print()</span> {
+        <span class="nt">var</span> request = <span class="s">advAjaxGetRequest</span>("query");
+        alert('姓名 = ' + request["name"] + "\n"
+            + '電話 = ' + request["phone"] + "\n"
+            + '地址 = ' + request["addr"]);
+    };
+<!--</script>--><span class="nt">&lt;/script</span><span class="nt">&gt;</span>
+
+                    </code>
+                </pre>
+            </div>
+            <p>一般的AJAX程式設計需將使用的元素用jQuery一個一個的封裝到JSON格式後再呼叫後端Action</p>
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">var</span> request={'name' : $('#name').val()
+           , 'phone' : $('#phone').val()
+           , 'addr' : $('#addr').val()};
+alert('姓名 = ' + request["name"] + "\n"
+    + '電話 = ' + request["phone"] + "\n"
+    + '地址 = ' + request["addr"]);
+                    </code>
+                </pre>
+            </div>
+            <p>當元素過多時會造成程式撰寫的困難，若要處理response資料有關到table部份會更加複雜，因此我們提供advAjaxGetRequest及advAjaxSetResponse二個功能對元素做取值及設值的動作。
+            接下來我們來看如何時用這二個功能，還有我們提供了那些功能。</p>
+            <h2 id="use">如何使用ACOD</h2>
+            <h3>設定Acod標籤</h3>
+            <p>我們在網頁元素下加上<code><span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"acod"</span> <span class="nt">&gt;</span><span class="nt">&lt;/div</span><span class="nt">&gt;</span></code>
+            ，當網頁載入後會先執行<code>advAjaxRegister();</code>，該程式會歷遍所有元素並找到acod的標籤，並將標籤內的劇本記錄下來。</p>
+            <h3>加入劇本</h3>
+            <p>一個作業裡基本功能應該會有「查詢、新增、更新、刪除」，這些功能也就是我們所稱的劇本，主要目的在不同的劇本下應該會使用到不同
+               的元素，我們只需要收集或設定有必要的元素避免將太多不必要的資料送到後端或浪費瀏覽器效率於顯示資料上。
+            </p>
+            <h3>範列：將欄位加入query、add、update、delete的劇本</h3>
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>姓名</label>
+                            <input type="text" class="form-control" name="I2_name">
+                            <div class="acod">to:query;add;update;delete</div>
+                        </div>
+                        <div class="form-group">
+                            <label>電話</label>
+                            <input type="text" class="form-control" name="I2_phone">
+                            <div class="acod">fr:query;delete to:add;update</div>
+                        </div>
+                        <div class="form-group">
+                            <label>地址</label>
+                            <input type="text" class="form-control" name="I2_addr">
+                            <div class="acod">fr:query;delete to:add;update </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <form role="form">
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" onclick="I2_example('query')">查詢</button>
+                    <button type="button" class="btn btn-success" onclick="I2_example('add')">新增</button>
+                    <button type="button" class="btn btn-warming" onclick="I2_example('update')">更新</button>
+                    <button type="button" class="btn btn-danger" onclick="I2_example('delete')">刪除</button>
+                </div>
+            </form>
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"form-group"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;label </span><span class="na">class=</span><span class="s">"control-label"</span><span class="nt">&gt;</span>姓名<span class="nt">&lt;/label&gt;</span>
+    <span class="nt">&lt;input </span><span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I2_name"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>to:query;add;update;delete<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;label </span><span class="na">class=</span><span class="s">"control-label"</span><span class="nt">&gt;</span>電話<span class="nt">&lt;/label&gt;</span>
+    <span class="nt">&lt;input </span><span class="na">type=</span><span class="s">"text"</span><span class="na">name=</span><span class="s">"I2_phone"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>fr:query;delete to:add;update<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;label </span><span class="na">class=</span><span class="s">"control-label"</span><span class="nt">&gt;</span>地址<span class="nt">&lt;/label&gt;</span>
+    <span class="nt">&lt;input </span><span class="na">type=</span><span class="s">"text"</span><span class="na">name=</span><span class="s">"I2_addr"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div </span><span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>fr:query;delete to:add;update <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>;
+<span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('query')"</span><span class="nt">&gt;</span>查詢<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('add')"</span><span class="nt">&gt;</span>新增<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('update')"</span><span class="nt">&gt;</span>更新<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('delete')"</span><span class="nt">&gt;</span>刪除<span class="nt">&lt;/button&gt;</span>
+
+<span class="nt">var</span> I2_data =
+    [
+      { 'I2_name':'TOM'
+      , 'I2_phone':'12345678'
+      , 'I2_addr':'New 9RD Taipei'}
+    , { 'I2_name':'SAM'
+      , 'I2_phone':'87654321'
+      , 'I2_addr':'No.2, Yongkang St Taipei'}
+    ];
+
+
+function I2_example(Scenario) {
+    <span class="nt">var</span> request = <span class="s">advAjaxGetRequest</span>(Scenario);
+    if (Scenario == "query") {
+        <span class="nt">var</span> query;
+        for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
+        {
+            if (I2_data[i] &amp;&amp; I2_data[i].I2_name == request["I2_name"]) {
+                query = I2_data[i];
+            }
+        }
+        if (query)
+            <span class="s">advAjaxSetResponse</span>("query", query);
+    }
+    else if (Scenario == "add") {
+        <span class="nt">var</span> i = I2_data.length;
+        I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
+    }
+    else if (Scenario == "update") {
+        for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
+        {
+            if (I2_data[i].I2_name == request["I2_name"]) {
+                I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
+            }
+        }
+    }
+    else if (Scenario == "delete") {
+        for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
+        {
+            if (I2_data[i] &amp;&amp; I2_data[i].I2_name == request["I2_name"]) {
+                delete I2_data[i];
+                <span class="s">advAjaxSetResponse</span>("delete", request);
+                return false;
+            }
+        }
+    }
+}
+                    </code>
+                </pre>
+            </div>
+
+            <div class="bs-callout bs-callout-info">
+                <h3>劇本設定</h3>
+                <p>提供3種request、response方向，決對定方向後填入劇本。</p>
+                <li>to 對 AP server 發出需求時，應送出此元件值或屬性</li>
+                <li>fr 當 AP server 回應結果時，應設定此元件值或屬性</li>
+                <li>bi 等同於 to + fr</li>
+                <p>填入劇本後可為to:query;add; fr:delete或bi:query;</p>
+            </div>
+
+            <div class="bs-callout bs-callout-warning">
+                <h3>執行語法</h3>
+                <p>收集劇本元素及配置資料至元素。</p>
+                <li><code>advAjaxGetRequest(Scenario)</code>: 收集所有設定劇本的元素。</li>
+                <li><code>advAjaxSetResponse(Scenario,response)</code>: 將資料(response)配置到劇本元素。response為後端程式處理後的資料。</li>
+            </div>
+
+            <h3>設定欄位屬性</h3>
+            <p>除了可以傳送欄位值外也可以傳欄位屬性到後端，或由後端控制前端畫面。</p>
+            <h3>範列：傳送及設定欄位</h3>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>唯讀</label>
+                            <input type="text" class="form-control" name="I3_name">
+                            <div class="acod">bi:setRead(read);setSRead(read)</div>
+                        </div>
+
+                        <div class="form-group">
+                                <label>設為欄位唯讀</label>
+                                <input type="checkbox" name="I3_nameRead">
+                                <div class="acod">bi:setRead</div>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick="I3_example('setRead')">設定或取消唯讀</button>
+                            <button type="button" class="btn btn-default" onclick="I3_example('setSRead')">強制唯讀</button>
+                        </form>
+
+                </div>
+            </div>
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>唯讀<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"text"</span><span class="na"> name=</span><span class="s">"I3_name"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>bi:setRead(read)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>設為欄位唯讀<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"checkbox"</span><span class="na"> name=</span><span class="s">"I3_nameRead"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>bi:setRead<span class="nt">&lt;/div</span><span class="nt">&gt;</span>
+<span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setRead')"</span><span class="nt">&gt;</span>設定或取消唯讀<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setSRead')"</span><span class="nt">&gt;</span>強制唯讀<span class="nt">&lt;/button&gt;</span>
+
+function I3_example(Scenario) {
+    var request = advAjaxGetRequest(Scenario);
+    var response = {};
+    if (Scenario == "setRead") {
+        response = request;
+    }
+    if (Scenario == "setSRead") {
+        response["I3_nameRead"] = 1;
+    }
+    advAjaxSetResponse(Scenario, response);
+}
+                    </code>
+                </pre>
+            </div>
+
+            <div class="bs-callout bs-callout-warning">
+                <h3>執行方式</h3>
+                <p>前端增加元素與欲設定唯讀欄位名稱相同後面加上<code>Read</code>，如下</p>
+                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"text"</span><span class="na"> name=</span><span class="s">"{FieldName}"</span><span class="nt">&gt;</span></li>
+                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"{type}"</span><span class="na"> name=</span><span class="s">"{FieldName}Read"</span><span class="nt">&gt;</span></li>
+                <p>當該欄位為true時，執行advAjaxSetResponse會設定目標欄位為唯讀</p>
+                <p>亦可在執行後端程式後在Response中放入唯讀參數</p>
+                <li><code>response["{FieldName}Read"] = 1</code></li>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>設定背景顏色</label>
+                            <input type="text" class="form-control" name="I3_color">
+                            <div class="acod">bi:setColor(value,bgColor)</div>
+                        </div>
+                        <button type="button" class="btn btn-default" onclick="I3_example('setColor')">設定欄位為輸入顏色</button>
+                        <button type="button" class="btn btn-default" onclick="I3_example('setBlackColor')">後端設定為黑色</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>設定背景顏色<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"text"</span><span class="na"> name=</span><span class="s">"I3_color"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>bi:setColor(value,bgColor)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setColor')"</span><span class="nt">&gt;</span>設定欄位為輸入顏色<span class="nt">&lt;/button&gt;</span>
+
+function I3_example(Scenario) {
+    var request = advAjaxGetRequest(Scenario);
+    var response = {};
+    if (Scenario == "setColor") {
+	    if (request["I3_color"])
+	        response["I3_colorBgColor"] = request["I3_color"];
+	}
+    advAjaxSetResponse(Scenario, response);
+}
+                    </code>
+                </pre>
+            </div>
+
+            <div class="bs-callout bs-callout-warning">
+                <h3>執行方式</h3>
+                <p>前端增加元素與欲設定唯讀欄位名稱相同後面加上<code>Read</code>，如下</p>
+                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"text"</span><span class="na"> name=</span><span class="s">"{FieldName}"</span><span class="nt">&gt;</span></li>
+                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"{type}"</span><span class="na"> name=</span><span class="s">"{FieldName}Read"</span><span class="nt">&gt;</span></li>
+                <p>當該欄位為true時，執行advAjaxSetResponse會設定目標欄位為唯讀</p>
+                <p>亦可在執行後端程式後在Response中放入唯讀參數</p>
+                <li><code>response["{FieldName}Read"] = 1</code></li>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>動態選單</label>
+                            <select class="form-control" name="I3_select"></select>
+                            <div class="acod">bi:setList(value,selText,list)</div>
+                        </div>
+
+                            <div class="form-group">
+                                <label>你選擇了:</label>
+                                <label name="I3_selectSelText"></label>
+                                <div class="acod">fr:setList</div>
+                            </div>
+                            <button type="button" class="btn btn-default" onclick="I3_example('setList')">執行</button>
+                        </form>
+
+                </div>
+            </div>
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>動態選單<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;select</span><span class="na"> name=</span><span class="s">"I3_select"</span><span class="nt">&gt;</span><span class="nt">&lt;</span><span class="nt">/select&gt;</span>
+<span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>bi:setList(value,selText,list)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>你選擇了:<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;label</span><span class="na"> name=</span><span class="s">"I3_selectSelText"</span><span class="nt">&gt;</span><span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>fr:setList<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setList')"</span><span class="nt">&gt;</span>執行<span class="nt">&lt;/button&gt;</span>
+
+var I3_data = [{'key':'Taipei','value':'台北'}
+              ,{'key':'Taoyuan','value':'桃園'}
+              ,{'key':'NewNorthCity','value':'新北市'}];
+
+var I3_data2 = {'Taipei':['大同區','大安區','萬華區']
+               ,'Taoyuan':['桃園區','大溪區','中壢區']
+               ,'NewNorthCity':['永和區','板橋區','新店區']};
+
+function I3_example(Scenario) {
+    var request = advAjaxGetRequest(Scenario);
+    request["I3_selectList"] = I3_data;
+    if (request["I3_select"] &amp;&amp; I3_data2[request["I3_select"]]) {
+        request["I3_selectList"] = I3_data2[request["I3_select"]];
+    }
+    advAjaxSetResponse(Scenario, request);
+}
+                    </code>
+                </pre>
+            </div>
+            <div class="bs-callout bs-callout-info">
+                <h3>元素屬性設定</h3>
+                <li><code>read</code>: 自動產生{name}Read資料Request該元素是否為唯讀，Response將{name}Read為true時該元素設定為唯讀。</li>
+                <li><code>bgColor</code>: 自動產生{name}BgColor資料Request該元素背景色RGB代碼。Response時為設定該元素背景色。</li>
+                <li><code>selText</code>: 自動產生{name}SelText資料Request該元素選定值，Response時可預設選單選項。</li>
+                <li><code>list</code>: 動態下拉選單。
+            </li></div>
+
+            <h2 id="config">ACOD自訂config</h2>
+            <p>額外提供常用元素檢查屬性，例如要將輸入的名稱全部改為大寫、欄位必需要填值、檢查日期格式是否正確。透過劇本設定簡化JavaScript的
+               撰寫加速開發進度。</p>
+            <h3 id="config-tr">元素轉換</h3>
+            <p>提供5種轉換模式，轉大寫、小寫、數值金額表示、報單及繳納證格式化。在標籤內加入命令<code>tr:{upper|lower|cm3|declno|feememono}</code>。當畫面載入或離開元素後會自動轉換。</p>
+            <h3>範列：</h3>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>轉換大寫</label>
+                            <input type="text" class="form-control" name="I4_trUp" value="abcdefg">
+                            <div class="acod">tr:upper</div>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="form-group">
+                            <label>轉換小寫</label>
+                            <input type="text" class="form-control" name="I4_trLo" value="ABCDEFG">
+                            <div class="acod">tr:lower</div>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="form-group">
+                            <label>金額表示</label>
+                            <input type="text" class="form-control acodConfigCm3" name="I4_trCm3" value="12345" style="text-align: right;">
+                            <div class="acod">tr:cm3</div>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="form-group">
+                            <label>報單格式</label>
+                            <input type="text" class="form-control acodConfigDeclno" name="I4_trDeclno" value="AA  0612341234">
+                            <div class="acod">tr:upper;declno</div>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="form-group">
+                            <label>繳納證格式</label>
+                            <input type="text" class="form-control acodConfigFeememono" name="I4_trFeememno" value="BEF51053000023">
+                            <div class="acod">tr:upper;feememono</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>轉換大寫<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I4_trUp"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>tr:upper<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>轉換小寫<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I4_trLo"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>tr:lower<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>金額表示<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I4_trCm3"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>tr:cm3<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>報單格式<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I4_trDeclno"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>tr:upper;declno<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>稅單格式<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I4_trFeememno"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>tr:upper;feememono<span class="nt">&lt;/div&gt;</span>
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-chk">欄位檢查(jail, chk)</h3>
+            <p>元素內容檢核，在標籤加入<code>{jail|chk(scenario1,scenario2,..)}:cmd1{;cmd2;...}</code>
+            可在離開元素(jail)或是執行<code>advConfigCheck</code>時檢核指定劇本的元素。</p>
+            <div class="bs-callout bs-callout-info">
+                <li><code>jail:{cmd}</code> : 游標離開元素時檢核，如果檢查不通過，就鎖住游標於輸入欄位中。</li>
+                <li><code>chk(scenario1,scenario2,..):{cmd}</code> : 於執行advConfigCheck時檢查。
+                <p>搭配命令<code>desc:{ColText}</code>在檢核有誤時可於<code><span class="nt">&lt;input</span> id="status"<span class="nt">&gt;</span></code>顯示錯誤訊息，{ColText}為欄位說明。</p></li>
+            </div>
+            <div class="bs-callout bs-callout-warning">
+                <h4><code>{cmd}</code>在<code>{jail|chk}</code>可以為</h4>
+                <li><code>string</code> : 字串長度檢核。</li>
+                <li><code>integer</code> : 整數值。</li>
+                <li><code>pInteger</code> : 整數值，不可為負數。</li>
+                <li><code>decimal</code> : 小數值。</li>
+                <li><code>pDecimal</code> : 小數值，不可為負數。</li>
+                <li><code>chars({chr})</code> : 允許字元。</li>
+                <li><code>upper</code> : 為 chars(upper) 的簡寫。</li>
+                <li><code>lower</code> : 為 chars(lower) 的簡寫。</li>
+                <li><code>select</code> : 表示必須選擇一個值。</li>
+                <li><code>notEmpty</code> : 表示必須有內容。</li>
+                <li><code>date</code> : 日期格式檢核。</li>
+                <h4><code>{cmd}</code>在<code>{chk}</code>可以為</h4>
+                <li><code>exone(x)</code> : 所有定義為 x 的欄位群，應恰好輸入其中一項。</li>
+                <li><code>minone(x)</code> : 所有定義為 x 的欄位群，至少應輸入其中一項。</li>
+                <li><code>spec</code> : 分割欄位合併。</li>
+            </div>
+            <div class="bs-callout bs-callout-info">
+                <h4>執行命令</h4>
+                <li><code>advConfigCheck(Scenario,alert)</code> : 執行chk標籤的檢查命令，檢核所有有設定為Scenario中的元素。
+                <p>Alert為True時在status顯示第一個錯誤訊息，否則為回傳一個ErrList</p></li>
+                <li><code>advConfigPutErrorMessage(errList)</code> : 將errList合併為一字串。</li>
+                <li><code>advConfigShowErrorMessage(ErrStr, color)</code> : 將錯誤字串顯示到status，color為1或-1時顯示紅色，0為正常藍色。</li>
+            </div>
+            <h3 id="config-chk-string">元素長度檢查</h3>
+            <p>在{cmd}裡填入<code>{jail|chk(s)}:string(x..y)</code>x..y表示該元素長度需超過x但小於等於y的數值。</p>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>jail字串長度檢查</label>
+                            <input type="text" class="form-control" name="I5_jailString">
+                            <div class="acod">desc:字串長度檢查(jail) jail:string(2..3)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-4">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>chk字串長度檢查</label>
+                            <input type="text" class="form-control" name="I5_chkString">
+                            <div class="acod">desc:字串長度檢查(chk) chk(I5_chkString):string(2..3)</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <form role="form">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="I5_example('I5_chkString')">長度檢查</button>
+                </div>
+            </form>
+            <div class="highlight">
+        	    <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>字串長度檢查<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_jailString"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字串長度檢查(jail) jail:string(2..3)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>字串長度檢查<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_chkString"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字串長度檢查(chk) chk(I5_chkString):string(2..3)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-default"</span> <span class="na">onclick=</span><span class="s">"I5_example('I5_chkString')"</span><span class="nt">&gt;</span>長度檢查<span class="nt">&lt;/button&gt;</span>
+
+function I5_example(Scenario) {
+    advConfigCheck(Scenario, 1);
+}
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-chk-digit">數值檢查</h3>
+            <p>有整數及小數檢查二種，分別可檢核是否可為負值。</p>
+            <li><code>{jail|chk(s)}:{integer(x..y)|pInteger(x..y)}</code> : 檢查是否為整數，{cmd}為pInteger時不可為負值</li>
+            <li><code>{jail|chk(s)}:{decimal(x..y)|pDecimal(x..y)}</code> : 檢查是否為數值，可為小數，{cmd}為pDecimal時不可為負值</li>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>整數檢查</label>
+                            <input type="text" class="form-control" name="I5_chkInteger">
+                            <div class="acod">desc:整數檢查 jail:integer(-10..10)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>正整數檢查</label>
+                            <input type="text" class="form-control" name="I5_chkPInteger">
+                            <div class="acod">desc:正整數檢查 jail:pInteger(0..10)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>小數值檢查</label>
+                            <input type="text" class="form-control" name="I5_chkDecimal">
+                            <div class="acod">desc:小數值檢查 jail:decimal(-10..10)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>正小數值檢查</label>
+                            <input type="text" class="form-control" name="I5_chkPDecimal">
+                            <div class="acod">desc:正小數值檢查 jail:pDecimal(0..10)</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>整數檢查<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_chkInteger"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:整數檢查 jail:integer(-10..10)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>正整數檢查<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_chkPInteger"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:正整數檢查 jail:pInteger(0..10)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>小數值檢查<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_chkDecimal"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:小數值檢查 jail:decimal(-10..10)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>正小數值檢查<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_chkPDecimal"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:正小數值檢查 jail:pDecimal(0..10)<span class="nt">&lt;/div&gt;</span>
+                    </code>
+                </pre>
+        	</div>
+        	<h3 id="config-chk-chars">字元檢查</h3>
+            <p>可檢查元素輸入的字元是否符合設定，可檢查英文需全部大寫或小寫、只能輸入數字、輸入的字母範圍或特殊符號。
+               使用命令<code>{jail|chk(s)}:chars(chr1,chr2,..)</code>輸入的內容需符合chr。諾輸入中文、全形與英文字母相同長度。
+            </p>
+            <div class="bs-callout bs-callout-info">
+                <p>chr可以為:</p>
+                <li><code>lower</code> : 字元需符號英文小寫</li>
+                <li><code>upper</code> : 字元需符號英文大寫</li>
+                <li><code>alpha</code> : lower + upper</li>
+                <li><code>digit</code> : 數值0 ~ 9</li>
+                <li>任意符號</li>
+            </div>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>字元檢查 小寫字母</label>
+                            <input type="text" class="form-control" name="I5_jailChars">
+                            <div class="acod">desc:字元檢查 jail:chars(lower)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>字元檢查 大寫字母</label>
+                            <input type="text" class="form-control" name="I5_jailChars">
+                            <div class="acod">desc:字元檢查 jail:chars(upper)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>字元檢查 英文字母</label>
+                            <input type="text" class="form-control" name="I5_jailChars">
+                            <div class="acod">desc:字元檢查 jail:chars(alpha)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>字元檢查 數值</label>
+                            <input type="text" class="form-control" name="I5_jailChars">
+                            <div class="acod">desc:字元檢查 jail:chars(digit)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>字元檢查 字母範圍(a~d)</label>
+                            <input type="text" class="form-control" name="I5_jailChars">
+                            <div class="acod">desc:字元檢查 jail:chars(a..d,A..D)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>字元檢查 特殊符號(% $ #)</label>
+                            <input type="text" class="form-control" name="I5_jailChars">
+                            <div class="acod">desc:字元檢查 jail:chars(%,$,#)</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>字元檢查 小寫字母<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_jailChars"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字元檢查 jail:chars(lower)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>字元檢查 大寫字母<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_jailChars"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字元檢查 jail:chars(upper)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>字元檢查 英文字母<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_jailChars"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字元檢查 jail:chars(alpha)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>字元檢查 數值<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_jailChars"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字元檢查 jail:chars(digit)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>字元檢查 字母範圍(a~d)<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_jailChars"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字元檢查 jail:chars(a..d,A..D)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>字元檢查 特殊符號(% $ #)<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_jailChars"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:字元檢查 jail:chars(%,$,#)<span class="nt">&lt;/div&gt;</span>
+                    </code>
+                </pre>
+        	</div>
+        	<h3 id="config-chk-date">日期檢查</h3>
+            <p>提供多種日期格式設定，加入<code>{jail|chk(s)}:date({type})</code>為該元素設定不同日期及時間格式檢核。
+            </p>
+            <div class="bs-callout bs-callout-info">
+                <p>type可以為 :</p>
+                <p>西元年加時間</p>
+                <li><code>d</code> : yyyy/mm/dd</li>
+                <li><code>dt2</code> : yyyy/mm/dd hh:mi</li>
+                <li><code>dt3</code> : yyyy/mm/dd hh:mi:ss</li>
+                <p>時間格式</p>
+                <li><code>t2</code> : hh:mi</li>
+                <li><code>t3</code> : hh:mi:ss</li>
+                <p>民國年加時間</p>
+                <li><code>r</code> : yyy/mm/dd</li>
+                <li><code>rt2</code> : yyy/mm/dd hh:mi</li>
+                <li><code>rt3</code> : yyy/mm/dd hh:mi:ss</li>
+            </div>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>日期檢查(dt3)</label>
+                            <input type="text" class="form-control" name="I5_jailDate">
+                            <div class="acod">desc:日期檢查(dt3) jail:date(dt3)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>日期檢查(t2)</label>
+                            <input type="text" class="form-control" name="I5_jailDate">
+                            <div class="acod">desc:日期檢查(t2) jail:date(t2)</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>日期檢查(r)</label>
+                            <input type="text" class="form-control" name="I5_jailDate">
+                            <div class="acod">desc:日期檢查(r) jail:date(r)</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>日期檢查(dt3)<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_jailDate"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:日期檢查(dt3) jail:date(dt3)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>日期檢查(t2)<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_jailDate"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:日期檢查(t2) jail:date(t2)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>日期檢查(r)<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_jailDate"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:日期檢查(r) jail:date(r)<span class="nt">&lt;/div&gt;</span>
+
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-chk-empty">空值檢核</h3>
+            <p>在input元素加入<code>chk(s):notEmpty</code>或在selet元素加入<code>chk(s):select</code>，在呼叫advConfigCheck後檢查元素一定要有值。
+            </p>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>不得為空值</label>
+                            <input type="text" class="form-control" name="I5_chkNotEmpty">
+                            <div class="acod">desc:不得為空值 chk(I5_chkEmpty):notEmpty</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>需選擇一值</label>
+                            <select class="form-control" name="I5_chkSelect"></select>
+                            <div class="acod">desc:需選擇一值 bi:load(list) chk(I5_chkEmpty):select</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <form role="form">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="I5_example('I5_chkEmpty')">空值檢核</button>
+                </div>
+            </form>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>不得為空值<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_chkNotEmpty"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:不得為空值 chk(I5_chkEmpty):notEmpty<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>需選擇一值<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;select</span> <span class="na">class=</span><span class="s">"form-control"</span> <span class="na">name=</span><span class="s">"I5_chkSelect"</span><span class="nt">&gt;&lt;/select&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:需選擇一值 bi:load(list) chk(I5_chkEmpty):select<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-default"</span> <span class="na">onclick=</span><span class="s">"I5_example('I5_chkEmpty')"</span><span class="nt">&gt;</span>空值檢核<span class="nt">&lt;/button&gt;</span>
+
+function I5_example(Scenario) {
+    var errList = advConfigCheck(Scenario);
+    advConfigShowErrorMessage(advConfigPutErrorMessage(errList), -1);
+}
+
+$(document).ready(function() {
+    advAjaxSetResponse("load", {'I5_chkSelectList':[{'':''}, {'Taipei':'台北'}, {'Taoyuan':'桃園'}, {'NewNorthCity':'新北市'}]});
+});
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-choiceOne">選擇一值</h3>
+            <p>在標籤加入<code>chk(Scenario1;Scenario2;..):exone(group)</code>後，呼叫advConfigCheck檢查群組裡只能選取一值。
+               可設定多個劇本，檢核群組內是否有設定唯一一值。
+            </p>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>三選一</label>
+                            <label>A1</label>
+                            <input type="checkbox" name="I5_chkCheck1">
+                            <div class="acod">desc:A1 chk(I5_chkExone):exone(x)</div>
+                            <label>A2</label>
+                            <input type="checkbox" name="I5_chkCheck2">
+                            <div class="acod">desc:A2 chk(I5_chkExone):exone(x)</div>
+                            <label>A3</label>
+                            <input type="checkbox" name="I5_chkCheck3">
+                            <div class="acod">desc:A3 chk(I5_chkExone):exone(x)</div>
+                        </div>
+                        <div class="form-group">
+                            <label>二選一</label>
+                            <label>B1</label>
+                            <input type="checkbox" name="I5_chkCheck4">
+                            <div class="acod">desc:B1 chk(I5_chkExone):exone(y)</div>
+                            <label>B2</label>
+                            <input type="checkbox" name="I5_chkCheck5">
+                            <div class="acod">desc:B2 chk(I5_chkExone):exone(y)</div>
+                        </div>
+                        <button type="button" class="btn btn-default" onclick="I5_example('I5_chkExone')">選一項</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>三選一<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;label&gt;</span>A1<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"I5_chkCheck1"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:A1 chk(I5_chkExone):exone(x)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>A2<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"I5_chkCheck2"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:A2 chk(I5_chkExone):exone(x)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>A3<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"I5_chkCheck3"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:A3 chk(I5_chkExone):exone(x)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>二選一<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;label&gt;</span>B1<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"I5_chkCheck4"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:B1 chk(I5_chkExone):exone(y)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>B2<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"I5_chkCheck5"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:B2 chk(I5_chkExone):exone(y)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">onclick=</span><span class="s">"I5_example('I5_chkExone')"</span><span class="nt">&gt;</span>選一項<span class="nt">&lt;/button&gt;</span>
+
+function I5_example(Scenario) {
+    var errList = advConfigCheck(Scenario);
+    advConfigShowErrorMessage(advConfigPutErrorMessage(errList), -1);
+}
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-choiceLeastOne">至少輸入一值</h3>
+            <p>在標籤加入<code>chk(Scenario1;Scenario2;..):minone(group)</code>後，呼叫advConfigCheck檢查群組裡至少選取一值。
+               可設定多個劇本，檢核群組內是否有選取一值。
+            </p>
+            <div class="row">
+                <div class="col-xs-3">
+                    <form role="form">
+                        <label>至少輸入一欄</label>
+                        <div class="form-group">
+                            <label>C1</label>
+                            <input type="text" class="form-control" name="I5_chkCheck6">
+                            <div class="acod">desc:C1 chk(I5_chkMinone):minone(x)</div>
+                        </div>
+                        <div class="form-group">
+                            <label>C2</label>
+                            <input type="text" class="form-control" name="I5_chkCheck7">
+                            <div class="acod">desc:C2 chk(I5_chkMinone):minone(x)</div>
+                        </div>
+                        <div class="form-group">
+                            <label>C3</label>
+                            <input type="text" class="form-control" name="I5_chkCheck8">
+                            <div class="acod">desc:C3 chk(I5_chkMinone):minone(x)</div>
+                        </div>
+                        <button type="button" class="btn btn-default" onclick="I5_example('I5_chkMinone')">檢核</button>
+                    </form>
+                </div>
+            </div>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>至少輸入一欄<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;label&gt;</span>C1<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_chkCheck6"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:C1 chk(I5_chkMinone):minone(x)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>C2<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_chkCheck7"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:C2 chk(I5_chkMinone):minone(x)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>C3<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I5_chkCheck8"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:C3 chk(I5_chkMinone):minone(x)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">onclick=</span><span class="s">"I5_example('I5_chkMinone')"</span><span class="nt">&gt;</span>檢核<span class="nt">&lt;/button&gt;</span>
+
+function I5_example(Scenario) {
+    var errList = advConfigCheck(Scenario);
+    advConfigShowErrorMessage(advConfigPutErrorMessage(errList), -1);
+}
+                    </code>
+                </pre>
+            </div>
+            <h2 id="config-set">元素設定</h3>
+            <p>提供<code>spec</code>、<code>auto</code>、<code>attr</code>、<code>mod</code>四種元素常用功能，簡化操作程式上的設計。</p>
+            <h3 id="config-merge">合併欄位</h3>
+            <p>加入<code>spec:declno(col1,col2,col3,col4,col5)</code>可將欄位col1~col5合併到一欄裡，需所有欄位都填值才會合併。
+            </p>
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="I6_declno1" maxlength="2">
+                    <label>/</label>
+                    <input type="text" class="form-control" name="I6_declno2" maxlength="2">
+                    <label>/</label>
+                    <input type="text" class="form-control" name="I6_declno3" maxlength="2">
+                    <label>/</label>
+                    <input type="text" class="form-control" name="I6_declno4" maxlength="3">
+                    <label>/</label>
+                    <input type="text" class="form-control" name="I6_declno5" maxlength="5">
+                    <input type="text" name="I6_declno" hidden="">
+                    <div class="acod">desc:declno to:I6_declno spec:declno(I6_declno1,I6_declno2,I6_declno3,I6_declno4,I6_declno5)</div>
+                </div>
+            </form>
+            <form role="form">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="I6_example('I6_declno')">取得報單</button>
+                </div>
+            </form>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I6_declno1"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;label&gt;</span>/<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I6_declno2"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;label&gt;</span>/<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I6_declno3"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;label&gt;</span>/<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I6_declno4"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;label&gt;</span>/<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I6_declno5"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"I6_declno"</span> <span class="na">hidden</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>desc:declno to:I6_declno spec:declno(I6_declno1,I6_declno2,I6_declno3,I6_declno4,I6_declno5)<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">onclick=</span><span class="s">"I6_example('I6_declno')"</span><span class="nt">&gt;</span>取得報單<span class="nt">&lt;/button&gt;</span>
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-auto">自動下一欄</h3>
+            <p>設定輸入元素的最大長度，加入<code>auto:{col}</code>在字滿後會自動換到{col}元素。限定在input:text、textarea才會生效。
+            </p>
+            <form role="form">
+                <div class="form-group">
+                    <label>輸入3碼</label>
+                    <input type="text" class="form-control" maxlength="3" name="I7_auto1">
+                    <div class="acod">auto:I7_auto2</div>
+                </div>
+                <div class="form-group">
+                    <label>輸入4碼</label>
+                    <input type="text" class="form-control" maxlength="4" name="I7_auto2">
+                    <div class="acod">auto:I7_auto3</div>
+                </div>
+                <div class="form-group">
+                    <label>輸入5碼</label>
+                    <input type="text" class="form-control" maxlength="5" name="I7_auto3">
+                    <div class="acod">auto:I7_auto1</div>
+                </div>
+            </form>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>輸入3碼<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">maxlength=</span><span class="s">3</span> <span class="na">name=</span><span class="s">"I7_auto1"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>auto:I7_auto2<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>輸入4碼<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">maxlength=</span><span class="s">4</span> <span class="na">name=</span><span class="s">"I7_auto2"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>auto:I7_auto3<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;label&gt;</span>輸入5碼<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">maxlength=</span><span class="s">5</span> <span class="na">name=</span><span class="s">"I7_auto3"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>auto:I7_auto1<span class="nt">&lt;/div&gt;</span>
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-dis">設定唯讀、元素停用</h3>
+            <p>加入<code>attr(Scenario):{read|edit|dis|en}</code>後呼叫<code>advConfigAttr(Scenario)</code>執行設定的劇本，可將該元素設為唯讀、停用或可編輯及啟用。
+            </p>
+            <div class="bs-callout bs-callout-info">
+                <p>執行語法</p>
+                <li><code>advConfigAttr(Scenario)</code> : 執行劇本的設定元素啟用停用。</li>
+            </div>
+            <form role="form">
+                <div class="form-group">
+                    <label>欄位唯讀</label>
+                    <input type="text" class="form-control" maxlength="3" name="I8_attrRead">
+                    <div class="acod">attr(I8_example1):read attr(I8_example2):edit</div>
+                </div>
+            </form>
+            <form role="form">
+                <div class="form-group">
+                    <label>元素停用</label>
+                </div>
+            </form>
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <input type="text" class="form-control" maxlength="3" name="I8_attrDis1">
+                    <div class="acod">attr(I8_example1):dis attr(I8_example2):en</div>
+                    <input type="checkbox" name="I8_attrDis2">
+                    <div class="acod">attr(I8_example1):dis attr(I8_example2):en</div>
+                    <select class="form-control" name="I8_attrDis3"></select>
+                    <div class="acod">bi:load(list) attr(I8_example1):dis attr(I8_example2):en</div>
+                </div>
+            </form>
+            <form role="form">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="I8_example('I8_example1')">停用</button>
+                    <button type="button" class="btn btn-default" onclick="I8_example('I8_example2')">啟用</button>
+                </div>
+            </form>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;label&gt;</span>欄位唯讀<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">maxlength=</span><span class="s">3</span> <span class="na">name=</span><span class="s">"I8_attrRead"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>attr(I8_example1):read attr(I8_example2):edit<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;label&gt;</span>元素停用<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">maxlength=</span><span class="s">3</span> <span class="na">name=</span><span class="s">"I8_attrDis1"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>attr(I8_example1):dis attr(I8_example2):en<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"I8_attrDis2"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>attr(I8_example1):dis attr(I8_example2):en<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">"I8_attrDis3"</span><span class="nt">&gt;&lt;/select&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>bi:load(list) attr(I8_example1):dis attr(I8_example2):en<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">onclick=</span><span class="s">"I8_example('I8_example1')"</span><span class="nt">&gt;</span>停用<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">onclick=</span><span class="s">"I8_example('I8_example2')"</span><span class="nt">&gt;</span>啟用<span class="nt">&lt;/button&gt;</span>
+
+function I8_example(Scenario) {
+    advConfigAttr(Scenario);
+}
+                    </code>
+                </pre>
+            </div>
+            <h3 id="config-dis">檢查異動元素</h3>
+            <p>加入<code>mod:{Scenario1,Scenario2}</code>呼叫<code>advConfigModReset(S)</code>設定初始值，檢查時呼叫<code>advConfigModCheck(S)</code>。
+            </p>
+            <div class="bs-callout bs-callout-info">
+                <p>執行語法</p>
+                <li><code>advConfigModReset(Scenario)</code> : 設定初始值</li>
+                <li><code>advConfigModCheck(Scenario, Alert)</code> : 檢查指定的劇本，Alert設定為true時status顯示錯誤訊息，回傳ErrList。</li>
+            </div>
+            <form class="form" role="form">
+                <div class="form-group">
+                    <label>元素異動</label>
+                </div>
+            </form>
+            <form class="form-inline" role="form">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="I9_mod1" value="test">
+                    <div class="acod">desc:Text mod:I9_example</div>
+                    <input type="checkbox" name="I9_mod2">
+                    <div class="acod">desc:CheckBox mod:I9_example</div>
+                    <select class="form-control" name="I9_mod3"></select>
+                    <div class="acod">desc:Select bi:load(list,selText) mod:I9_example</div>
+                </div>
+            </form>
+            <form role="form">
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" onclick="I9_example('I9_example')">異動檢核</button>
+                </div>
+            </form>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;I9_mod1&quot;</span> <span class="na">value=</span><span class="s">&quot;test&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>desc:Text mod:I9_example<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">name=</span><span class="s">&quot;I9_mod2&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>desc:CheckBox mod:I9_example<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">&quot;I9_mod3&quot;</span><span class="nt">&gt;&lt;/select&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>desc:Select bi:load(list,selText) mod:I9_example<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">onclick=</span><span class="s">&quot;I9_example(&#39;I9_example&#39;)&quot;</span><span class="nt">&gt;</span>異動檢核<span class="nt">&lt;/button&gt;</span>
+
+advConfigModReset('I9_example');
+function I9_example(Scenario) {
+    advConfigModCheck(Scenario, 1);
+}
+                    </code>
+                </pre>
+            </div>
+
+            <h2 id="config">ACOD 自定義網格grid處理程式庫</h2>
+            <p>預先定義網格樣式後加上ACOD標籤，可加入網格瀏覽方式或加入event觸發事件，透過to+fr功能將資料帶入或取出內容。簡化二維式資料轉入<code>&quot;table&quot;</code>元素裡，且
+               格內可放置input、label、select、radio等元素。</p>
+            <h3>基礎網格樣式</h3>
+            <p>先建立一個table並加入acod標籤<code>grid:tmpl({tableName})</code>，Response的table內容是以欄位名稱為<code>{tableName}Col{colName}</code>的array資料型態，即完成網格模型建立。</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;table&gt;</span>
+    <span class="nt">&lt;thead&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;th&gt;</span>Name<span class="nt">&lt;/th&gt;</span>
+            <span class="nt">&lt;th&gt;</span>City<span class="nt">&lt;/th&gt;</span>
+            <span class="nt">&lt;th&gt;</span>Gender<span class="nt">&lt;/th&gt;</span>
+            <span class="nt">&lt;th&gt;</span>Desc<span class="nt">&lt;/th&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/thead&gt;</span>
+    <span class="nt">&lt;tbody&gt;</span>
+        <span class="nt">&lt;tr&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;label</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;&lt;/label&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;city&quot;</span><span class="nt">&gt;&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;radio&quot;</span> <span class="na">name=</span><span class="s">&quot;gender&quot;</span> <span class="na">value=</span><span class="s">&quot;m&quot;</span><span class="nt">&gt;</span>男 <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;radio&quot;</span> <span class="na">name=</span><span class="s">&quot;gender&quot;</span> <span class="na">value=</span><span class="s">&quot;w&quot;</span><span class="nt">&gt;</span>女 <span class="nt">&lt;/td&gt;</span>
+            <span class="nt">&lt;td&gt;&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;&lt;/td&gt;</span>
+        <span class="nt">&lt;/tr&gt;</span>
+    <span class="nt">&lt;/tbody&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:tmpl(id)<span class="nt">&lt;/div&gt;</span>
+                    </code>
+                </pre>
+            </div>
+            <p>建立一個實際table加入acod標籤<code>grid:table({tableName})</code>並加入匯入資料的劇本<code>fr:G1_query</code>。</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;table</span> <span class="na">name=</span><span class="s">&quot;grid&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:table(id) fr:G1_query<span class="nt">&lt;/div&gt;</span>
+                    </code>
+                </pre>
+            </div>
+            <p>在執行<code>advAjaxSetResponse</code>時會依照<code>grid:tmpl</code>為樣版建立在<code>grid:table</code>為標籤的實體網格。</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+var g1_res = {'idColName':['Tom','Mary']
+            , 'idColCity':['taipei','Taoyuan']
+            , 'idColGender':['m','w']
+            , 'idColDesc':['Handsome','beautiful']
+            , 'idBegin':0};
+g1_res['idCount'] = g1_res['idColName'].length;
+g1_res['idTotal'] = g1_res['idColName'].length;
+
+advAjaxSetResponse("G1_query", g1_res);
+        	        </code>
+        	    </pre>
+        	</div>
+        	<div class="bs-callout bs-callout-info">
+                <p>執行語法</p>
+                <li><code>advAjaxGetRequest(Scenario)</code> : 收集網格資料。</li>
+                <li><code>advAjaxSetResponse(Scenario, response)</code> : 將Response資料放入網格。</li>
+            </div>
+        	<p>設定{tableName}為「id」，對應<code>table</code>欄位其Response的欄位名稱應為「idColName」，資料型態為array內容有[Tom,Mary]。
+        	   另需設定起始頁數<code>idBegin</code>、查詢筆數<code>idCount</code>及總筆數<code>idTotal</code>。
+               執行G1_query查詢劇本產生如下顯示的網格。</p>
+            <table class="table table-striped table-bordered tmpl">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>District</th>
+                        <th>Gender</th>
+                        <th>meth</th>
+                        <th>Desc</th>
+                        <th>Desc2</th>
+                        <th>CHK1</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="name">
+                            <label name="name"></label>
+                            <div class="acod">grid:dblclick(onDblName)</div>
+                        </td>
+                        <td id="city">
+                            <select name="city">
+                                <option value=""></option>
+                                <option value="Taipei">台北市</option>
+                                <option value="Taoyuan">桃園市</option>
+                                <option value="NewTaipeiCity">新北市</option>
+                            </select>
+                            <div class="acod">grid:change(listDist,G1_listQuery) fr:G1_query(value,list)</div>
+                        </td>
+                        <td id="dist">
+                            <select name="dist"></select>
+                            <div class="acod">fr:G1_listQuery(list);G1_query(value,list)</div>
+                        </td>
+                        <td id="gender">
+                            <input type="radio" name="gender" value="m">男</input>
+                            <input type="radio" name="gender" value="w">女</input>
+                        </td>
+                        <td id="meth">
+                            <input type="checkbox" name="methA"><label>A</label>
+                            <input type="checkbox" name="methB"><label>B</label>
+                            <input type="checkbox" name="methC"><label>C</label>
+                        </td>
+                        <td id="desc">
+                            <input type="text" name="desc" maxlength=10>
+                            <div class="acod">desc:說明1 auto:desc2 fr:G1_query(value,bgColor) tr:upper jail:string(3..10) attr(G1_dis):dis attr(G1_en):en</div>
+                        </td>
+                        <td id="desc2">
+                            <input type="text" name="desc2" maxlength=14>
+                            <div class="acod">desc:說明2 auto:desc tr:cm3;declno;upper attr(G1_dis):dis attr(G1_en):en</div>
+                        </td>
+                        <td id="chk1">
+                            <input type="text" name="chk1">
+                            <div class="acod">desc:chk1 chk(G1_chk):date(d);notEmpty attr(G1_dis):dis attr(G1_en):en</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="acod">grid:tmpl(id);dblclick(onDblTable,1)</div>
+            <table class="table table-striped table-bordered" name="grid">
+            </table>
+            <div class="acod">grid:table(id);pgrow(2);attr(reqAll) fr:G1_query to:G1_send</div>
+        </div>
+        <div style="width:100%;height:500px;overflow:auto;">
+            <div class="container">
+            <h3>網格資訊</h3>
+            <p>顯示目前頁數及查詢資訊，在&lt;input&gt;或&lt;label&gt;元素後加上Tag<code>grid:{pgcnt|rowcnt|qrycnt|spgn}({tableName})</code>。
+            </p>
+            <div class="row">
+                <div class="col-xs-2">
+                    <label>總頁數 </label>
+                    <p><code>grid:pgcnt(id)</code></p>
+                </div>
+                <div class="col-xs-1">
+                    <label name="pgcnt"></label>
+                    <div class="acod">grid:pgcnt(id)</div>
+                </div>
+                <div class="col-xs-2">
+                    <label>總筆數 </label>
+                    <p><code>grid:rowcnt(id)</code></p>
+                </div>
+                <div class="col-xs-1">
+                    <input type="text" class="form-control" name="rowcnt">
+                    <div class="acod">grid:rowcnt(id)</div>
+                </div>
+                <div class="col-xs-2">
+                    <label>查詢總筆數 </label>
+                    <p><code>grid:qrycnt(id)</code></p>
+                </div>
+                <div class="col-xs-1">
+                    <input type="text" class="form-control" name="rowcnt">
+                    <div class="acod">grid:qrycnt(id)</div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>目前頁數 </label>
+                    <p><code>grid:spgn(id)</code></p>
+                </div>
+                <div class="col-xs-1">
+                    <input type="text" class="form-control" name="spgn">
+                    <div class="acod">grid:spgn(id)</div>
+                </div>
+            </div>
+
+            <h3>網格切換</h3>
+            <p>將<code>&lt;button&gt;、&lt;a&gt;、&lt;img&gt;</code>設定Tag後成為網格切換功能鍵，在上列元素加入
+               <code>grid:{fpg|ppg|npg|lpg}({tableName})</code>。
+               若加入<code>grid:add(tableName)</code>可使網格新增加一列功能。
+               當在<code>&lt;select&gt;</code>後加入<code>grid:spg(tableName)</code>可選擇切換的頁數。
+            </p>
+            <div class="row">
+                <div class="col-xs-1">
+                    <label>第一頁</label>
+                    <a class="btn btn-primary" role="button">|<</a>
+                    <div class="acod">grid:fpg(id)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>上一頁</label>
+                    <a class="btn btn-primary" role="button"><</a>
+                    <div class="acod">grid:ppg(id)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>下一頁</label>
+                    <a class="btn btn-primary" role="button">></a>
+                    <div class="acod">grid:npg(id)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>最未頁</label>
+                    <a class="btn btn-primary" role="button">>|</a>
+                    <div class="acod">grid:lpg(id)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>切換頁次</label>
+                    <select name="rowcnt" id="rowcnt" class="form-control"></select>
+                    <div class="acod">grid:spg(id)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>增加一列</label>
+                    <a class="btn btn-primary" role="button">+</a>
+                    <div class="acod">grid:add(id) fr:G1_query(value,list)</div>
+                </div>
+            </div>
+            <div class="bs-callout bs-callout-info">
+                <p>在<code>grid:</code>後加入</p>
+                <li><code>fpg({tableName})</code> : 顯示第一頁。</li>
+                <li><code>ppg({tableName})</code> : 顯示上一頁。</li>
+                <li><code>npg({tableName})</code> : 顯示下一頁。</li>
+                <li><code>lpg({tableName})</code> : 顯示最未頁。</li>
+                <li><code>spg({tableName})</code> : 顯示選擇的頁數，元素必順為<code>&lt;select&gt;</code>。</li>
+                <li><code>add({tableName})</code> : 增加一列，必順在最未頁方能執行。</li>
+            </div>
+
+            <h3>網格自定義Config</h3>
+            <p>在Temp Table的欄位中也可以像一般元素一樣設定Acod Config，若欄位中未設定則套用實體Table中的Config，但還是會有所限制。下面提供幾種範列參考。</p>
+            <h3>欄位自定義<code>fr</code></h3>
+            <p>可針對不同欄位做屬性設定，透過<code>fr</code>可將後端資料設定到該欄位屬性，如設定<code>list</code>及<code>bgColor</code>。</p>
+            <p>在網格欄位裡使用<code>to,bi</code>Tag無實際意義，若要將網格資料Request到後端只需在<code>grid:table(id)</code>加入<code>{to|bi}:{Scenario}</code>
+               所有欄位皆按照該設定封裝網格資料，若在網格中有加入<code>fr</code>即建議不使用<code>bi</code>模式，並非所有Scenario都需要封裝或設定。
+            </p>
+            <p>透過網格的G1_query在<code>advAjaxSetResponse</code>時將g1_res的資料idColDist選單預設值及idColDistList選單清單，按照value、list設定到
+        	   <code><span class="nt">&lt;select</span> <span class="na">id=</span><span class="s">&quot;dist&quot;</span><span class="nt">&gt;</span></code>
+            </p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;table&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;dist&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">&quot;dist&quot;</span><span class="nt">&gt;&lt;/select&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>fr:G1_query(value,list)<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:tmpl(id)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;table</span> <span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:table(id) fr:G1_query<span class="nt">&lt;/div&gt;</span>
+
+var g1_res = {'idColDist':['Songshan','Taoyuan','Da’an']
+            , 'idColDist<span class="s">List</span>':[[{'Songshan':'松山區'},{'Xinyi':'信義區'},{'Da’an':'大安區'}]
+                              ,[{'Taoyuan':'桃園區'},{'Zhongli':'中壢區'}]
+                              ,[{'Songshan':'松山區'},{'Xinyi':'信義區'},{'Da’an':'大安區'}]]}
+
+advAjaxSetResponse("G1_query", g1_res);
+        	        </code>
+        	    </pre>
+        	</div>
+
+            <p>透過<code>bgColor</code>將欄位設上背景。當設定屬性時必需將value加上否則該欄位只配置屬性但值為空值。</p>
+        	<div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;table&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc&quot;</span> <span class="nt">&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>fr:G1_query(value,bgColor)<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:tmpl(id)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;table</span> <span class="na">name=</span><span class="s">&quot;id&quot;</span><span class="nt">&gt;&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:table(id) fr:G1_query<span class="nt">&lt;/div&gt;</span>
+
+var g1_res = {'idColDesc':['Handsome','beautiful','xxx']
+            , 'idColDesc<span class="s">BgColor</span>':[null,'red',null]}
+
+advAjaxSetResponse("G1_query", g1_res);
+        	        </code>
+        	    </pre>
+        	</div>
+
+            <h3><code>tr</code> 轉換</h3>
+            <p>將特定欄位做大小寫或金額表示轉換，下面舉例<code>upper,cm3,declno,upper</code>。desc離開欄位後自動轉大寫，desc2若輸入純數值自動轉金額表示，非純數值自動轉大寫，符合報單編碼轉報單格式。</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>tr:upper<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;desc2&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc2&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>tr:cm3;declno;upper<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+                    </code>
+        	    </pre>
+        	</div>
+
+            <h3><code>auto</code> 自動換欄</h3>
+            <p>當打滿該欄最大字數後自動跳下一欄，但限制在該行欄位做切換。在desc打滿10碼即跳到desc2，desc2打滿14碼自動跳到同一列的desc。</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;desc&quot;</span> <span class="na">maxlength=</span><span class="s">10</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>auto:desc2<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;desc2&quot;</span> <span class="na">maxlength=</span><span class="s">14</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc2&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>auto:desc<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+                    </code>
+        	    </pre>
+        	</div>
+
+            <h3>網格命令</h3>
+            <p>配合不同劇本執行不同檢核或元素停用狀態。</p>
+            <h3>檢核<code>{jail|chk(Scenario)}:cmd1;{cmd2...}</code></h3>
+            <p>可針對網格中的元素加入基本檢核，以下提供<code>date,notEmpty,string</code>的範列</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;</span>td <span class="na">id</span><span class="nt">=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;</span><span class="na">input</span> <span class="na">type</span><span class="nt">=</span><span class="s">&quot;text&quot;</span> name<span class="nt">=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;</span>div class<span class="nt">=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>desc:說明1 jail:string(<span class="nt">3..10</span>)<span class="nt">&lt;/</span>div<span class="nt">&gt;</span>
+<span class="nt">&lt;/</span>td<span class="nt">&gt;</span>
+<span class="nt">&lt;</span>td <span class="na">id</span><span class="nt">=</span><span class="s">&quot;chk1&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;</span><span class="na">input</span> <span class="na">type</span><span class="nt">=</span><span class="s">&quot;text&quot;</span> name<span class="nt">=</span><span class="s">&quot;chk1&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;</span>div class<span class="nt">=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>desc:chk1 chk(G1_chk):date(d);notEmpty<span class="nt">&lt;/</span>div<span class="nt">&gt;</span>
+<span class="nt">&lt;/</span>td<span class="nt">&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">onclick=</span><span class="s">&quot;G1_example(&#39;G1_chk&#39;)&quot;</span><span class="nt">&gt;</span>檢核<span class="nt">&lt;/button&gt;</span>
+
+function G1_example(Scenario) {
+    var errList = advConfigCheck(Scenario);
+    advConfigShowErrorMessage(advConfigPutErrorMessage(errList), -1);
+}
+                    </code>
+        	    </pre>
+        	</div>
+            <div class="row">
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default" onclick="G1_example('G1_chk')">檢核</button>
+                </div>
+            </div>
+
+            <h3>元素停用/啟用</h3>
+            <p>在tmpl網格元素內加入<code>attr({Scenario}):{dis|en}</code>，執行劇本程序可使元素停用或啟用。</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>attr(G1_dis):dis attr(G1_en):en<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;desc2&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;desc2&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>attr(G1_dis):dis attr(G1_en):en<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;chk1&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;chk1&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>attr(G1_dis):dis attr(G1_en):en<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">onclick=</span><span class="s">&quot;G1_example(&#39;G1_dis&#39;)&quot;</span><span class="nt">&gt;</span>停用<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">onclick=</span><span class="s">&quot;G1_example(&#39;G1_en&#39;)&quot;</span><span class="nt">&gt;</span>啟用<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+
+function G1_example(Scenario) {
+    advConfigAttr(Scenario);
+}
+        	        </code>
+        	    </pre>
+        	</div>
+            <div class="row">
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default" onclick="G1_example('G1_dis')">停用</button>
+                </div>
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default" onclick="G1_example('G1_en')">啟用</button>
+                </div>
+            </div>
+
+            <h3>匯出網格資料</h3>
+            <p>當網格資料輸入完後需要將網格打包後送，只需在網格設定<code>{to|bi}:{Scenario}</code>執行<code>advAjaxGetRequest({Scenario})</code>，網格即以array的方式封裝。</p>
+            <p>註:因table屬性設為reqAll所以會回傳所有資料</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">&quot;tmpl&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:tmpl(id)<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;table</span> <span class="na">name=</span><span class="s">&quot;grid&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:table(id);attr(reqAll) to:G1_send<span class="nt">&lt;/div&gt;</span>
+
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">&quot;button&quot;</span> <span class="na">onclick=</span><span class="s">&quot;G1_example(&#39;G1_send&#39;)&quot;</span><span class="nt">&gt;</span>傳送<span class="nt">&lt;/button&gt;</span>
+
+function G1_example(Scenario) {
+    var request = advAjaxGetRequest(Scenario);
+}
+        	        </code>
+        	    </pre>
+        	</div>
+            <div class="row">
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default" onclick="G1_example('G1_send')">傳送</button>
+                </div>
+            </div>
+
+            <h3>網格觸發事件</h3>
+            <p>可在網格或網格元素中加入觸發事件，只需加入Tag <code>grid:{dblclick|change}({func},{arge})</code>，該網格或元素即有觸發事件效果。</p>
+            <div class="highlight">
+                <pre>
+        	        <code>
+<span class="nt">&lt;table</span> <span class="na">class=</span><span class="s">&quot;tmpl&quot;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">name=</span><span class="s">&quot;name&quot;</span><span class="nt">&gt;&lt;/label&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:dblclick(onDblName)<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;city&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">&quot;city&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;&quot;</span><span class="nt">&gt;&lt;/option&gt;</span>
+            <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;Taipei&quot;</span><span class="nt">&gt;</span>台北市<span class="nt">&lt;/option&gt;</span>
+            <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;Taoyuan&quot;</span><span class="nt">&gt;</span>桃園市<span class="nt">&lt;/option&gt;</span>
+            <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">&quot;NewTaipeiCity&quot;</span><span class="nt">&gt;</span>新北市<span class="nt">&lt;/option&gt;</span>
+        <span class="nt">&lt;/select&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:change(listDist,G1_listQuery)<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+    <span class="nt">&lt;td</span> <span class="na">id=</span><span class="s">&quot;dist&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">&quot;dist&quot;</span><span class="nt">&gt;&lt;/select&gt;</span>
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>fr:G1_listQuery(list)<span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/td&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">&quot;acod&quot;</span><span class="nt">&gt;</span>grid:tmpl(id);dblclick(onDblTable,1)<span class="nt">&lt;/div&gt;</span>
+
+function listDist(name, Scenario, rowdata, col, ndx) {
+    var data = {'distList':g1_cityDistList[rowdata["city"]]};
+    advGridTableRowResponse(name, Scenario, ndx, data);
+}
+
+function onDblName(name, arg, data, col, ndx) {
+    alert("This is Col dblClick name = " + data["name"]);
+}
+
+function onDblTable(name, arg, data, col, ndx) {
+    alert("This is Table dblClick table[col:" + col + "] = " + data[col]);
+}
+                    </code>
+        	    </pre>
+        	</div>
+            <div class="bs-callout bs-callout-info">
+                <p>tag說明<code> grid:{dblclick|change}({func},{[arge]}) </code></p>
+                <li><code>{dblclick|change}</code> : 在grid後面放入event的名稱。</li>
+                <li><code>func</code> : javaScript的function名稱。</li>
+                <li><code>arge</code> : 帶給function的參數，為一個字串</li>
+                <p>範列 : grid:dblclick(coldbl, 1) 雙擊欄位後呼叫coldbl的function並傳入參數1</p>
+                <p>使用acod的bine event呼叫的function可獲得5個參數<code>(tableName, arge, {rowData}, col, ndx)</code></p>
+                <li><code>tableName</code> : 網格名稱。</li>
+                <li><code>arge</code> : 在網格tag所設定的參數。</li>
+                <li><code>{rowData}</code> : 點選網格該行的資料。</li>
+                <li><code>col</code> : 點選網格欄位名稱。</li>
+                <li><code>ndx</code> : 網格資料行數。</li>
+                <p>範列 : function coldbl(name, arge, data, col, ndx) {} 點選第一行</p>
+                <p>name = 'id', arge = 1, data = {name='Tom',city='Taipei',...}, col = 'name', ndx = 0</p>
+            </div>
+            <div class="bs-callout bs-callout-warning">
+                <p>執行命令 <code>advGridTableRowResponse(name, Scenario, ndx, data)</code></p>
+                <p>將data內容依欄位設定的劇本放回資料或屬性。</p>
+        	    <li><code>name</code> : 異動網格的名稱。</li>
+        	    <li><code>Scenario</code> : 執行的劇本。</li>
+        	    <li><code>ndx</code> : 執行的網格行數。</li>
+        	    <li><code>data</code> : 資料內容。</li>
+        	    <p>註:執行時因不在以整個網格做資料的配置，所以data的宣告不加{tableName}Col</p>
+            </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <h3>網格屬性</h3>
+            <p>針對網格可設定顯示的樣式。</p>
+            <h3>顯示整頁</h3>
+            <p>在網格加上Tag <code>grid:pgrow(2);attr(fullPage;reqPage)</code>每頁以一整頁顯示，pgrow為每頁筆數若未設定則顯示所有資料。</p>
+            <table class="table table-striped table-bordered tmpl">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Desc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="name">
+                            <label name="name"></label>
+                        </td>
+                        <td id="desc">
+                            <input type="text" name="desc">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="acod">grid:tmpl(id2)</div>
+            <table class="table table-striped table-bordered" name="grid">
+            </table>
+            <div class="acod">grid:table(id2);pgrow(2);attr(fullPage,reqPage) fr:G2_query to:G2_send</div>
+            <div class="row">
+                <div class="col-xs-1">
+                    <a class="btn btn-primary" role="button">|<</a>
+                    <div class="acod">grid:fpg(id2)</div>
+                </div>
+                <div class="col-xs-1">
+                    <a class="btn btn-primary" role="button"><</a>
+                    <div class="acod">grid:ppg(id2)</div>
+                </div>
+                <div class="col-xs-1">
+                    <a class="btn btn-primary" role="button">></a>
+                    <div class="acod">grid:npg(id2)</div>
+                </div>
+                <div class="col-xs-1">
+                    <a class="btn btn-primary" role="button">>|</a>
+                    <div class="acod">grid:lpg(id2)</div>
+                </div>
+                <div class="col-xs-1">
+                    <select name="rowcnt" id="rowcnt" class="form-control"></select>
+                    <div class="acod">grid:spg(id2)</div>
+                </div>
+            </div>
+            <h3>回傳網格資料</h3>
+            <p>可設定<code>grid:attr({reqAll|reqPage})</code>二種方式，前為將網格所有資料回傳，後者為回傳當前網格資料。</p>
+            <div class="bs-callout bs-callout-warning">
+        	    <li><code>reqAll</code> : 回傳已存在網格內(修改後)的資料包含分頁，限查詢時已將全部查詢資料暫存於網格內。</li>
+        	    <li><code>reqPage</code> : 回傳網格當前分頁的資料。</li>
+                <li>未設定 : 回傳已異動網格行列。</li>
+            </div>
+            <div class="row">
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default" onclick="G2_example('G2_send')">回傳當前資料</button>
+                </div>
+            </div>
+
+            <table class="tmpl">
+                <thead>
+                    <tr>
+                        <th colspan="5">Identity</th>
+                    </tr>
+                    <tr>
+                        <th name="name"><label style="display: inline-block; width: 200px;">Name</label></th>
+                        <th name="desc"><label style="display: inline-block; width: 400px;">Desc</label></th>
+                        <th><label style="display: inline-block; width: 200px;">City</label></th>
+                        <th><label style="display: inline-block; width: 200px;">dist</label></th>
+                        <th><label style="display: inline-block; width: 10px;"></label></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td id="name">
+                        <label style="display: inline-block; width: 200px;" name="name"></label>
+                        <div class="acod">grid:sort</div>
+                    </td>
+                    <td id="desc">
+                        <input style="display: inline-block; width: 400px;" type="text" name="desc">
+                        <div class="acod">grid:sort</div>
+                    </td>
+                    <td id="city">
+                        <select style="display: inline-block; width: 200px;" name="city">
+                            <option value=""></option>
+                            <option value="Taipei">台北市</option>
+                            <option value="Taoyuan">桃園市</option>
+                            <option value="NewTaipeiCity">新北市</option>
+                        </select>
+                        <div class="acod">grid:change(listDist,G4_listQuery)</div>
+                    </td>
+                    <td id="dist">
+                        <select style="display: inline-block; width: 200px;" name="dist"></select>
+                        <div class="acod">fr:G4_listQuery(list);G4_query(value,list)</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="acod">grid:tmpl(id4)</div>
+            <div style="position: relative; width: 890px; overflow: hidden">
+                <table class="fixtable table-striped table-bordered">
+                </table>
+                <div class="acod">grid:fixrow(id4)</div>
+            </div>
+            <div style="position: relative;  width: 890px; height: 200px; overflow:scroll">
+                <table class="fixtable table-striped table-bordered" name="grid">
+                </table>
+                <div class="acod">grid:table(id4);pgrow(7);head(2);attr(fullPage,reqPage) fr:G4_query to:G4_send</div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2">
+                    <label>總頁數 </label>
+                    <label name="pgcnt"></label>
+                    <div class="acod">grid:pgcnt(id4)</div>
+                </div>
+                <div class="col-xs-2">
+                    <label>總筆數 </label>
+                    <input type="text" class="form-control" name="rowcnt">
+                    <div class="acod">grid:rowcnt(id4)</div>
+                </div>
+                <div class="col-xs-2">
+                    <label>查詢總筆數 </label>
+                    <input type="text" class="form-control" name="rowcnt">
+                    <div class="acod">grid:qrycnt(id4)</div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>目前頁數 </label>
+                    <input type="text" class="form-control" name="spgn">
+                    <div class="acod">grid:spgn(id4)</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-1">
+                    <label>第一頁</label>
+                    <a class="btn btn-primary" role="button">|<</a>
+                    <div class="acod">grid:fpg(id4)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>上一頁</label>
+                    <a class="btn btn-primary" role="button"><</a>
+                    <div class="acod">grid:ppg(id4)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>下一頁</label>
+                    <a class="btn btn-primary" role="button">></a>
+                    <div class="acod">grid:npg(id4)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>最未頁</label>
+                    <a class="btn btn-primary" role="button">>|</a>
+                    <div class="acod">grid:lpg(id4)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>切換頁次</label>
+                    <select name="rowcnt" id="rowcnt" class="form-control"></select>
+                    <div class="acod">grid:spg(id4)</div>
+                </div>
+                <div class="col-xs-1">
+                    <label>增加一列</label>
+                    <a class="btn btn-primary" role="button">+</a>
+                    <div class="acod">grid:add(id4) fr:G1_query(value,list)</div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default" onclick="G4_example('G4_send')">回傳當前資料</button>
+                </div>
+            </div>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>
+            <form class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+                <input type="text" class="form-control" id="status" style="color: blue; font-weight: 900;">
+            </form>
+
+        </div>
+
+    <script type="text/javascript">
+        advConfigRegister();
+        advPaneRegister();
+        advAjaxRegister();
+        advGridRegister();
+        //advDeclRegister();
+    </script>
+
+</body></html>
