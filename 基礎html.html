@@ -80,36 +80,55 @@
                 }
 		    }
 
-            var I3_data = [{'key':'Taipei','value':'台北'},{'key':'Taoyuan','value':'桃園'},{'key':'NewNorthCity','value':'新北市'}];
-            var I3_data2 = {'Taipei':['大同區','大安區','萬華區']
-                           ,'Taoyuan':['桃園區','大溪區','中壢區']
-                           ,'NewNorthCity':['永和區','板橋區','新店區']};
+			//設定欄位屬性
+			//唯讀
+            function I3_example_Read(Scenario) {
+				var request = advAjaxGetRequest(Scenario);
+				var response = {};
+				if (Scenario == "setRead") {
+					response = request;
+				}
+				if (Scenario == "setSRead") {
+					response["I3_nameRead"] = 1;
+				}
+				advAjaxSetResponse(Scenario, response);
+			}
+			
+			//設定背景顏色
+			function I3_example_Color(Scenario) {
+				var request = advAjaxGetRequest(Scenario);
+				var response = {};
+				if (Scenario == "setColor") {
+					if (request["I3_color"])
+						response["I3_colorBgColor"] = request["I3_color"];
+				}
+				if (Scenario == "setBlackColor") {
+					response["I3_colorBgColor"] = "black";
+				}
+				advAjaxSetResponse(Scenario, response);
+			}
 
-		    function I3_example(Scenario) {
-		        var request = advAjaxGetRequest(Scenario);
-		        var response = {};
-		        if (Scenario == "setRead") {
-		            response = request;
-		        }
-		        if (Scenario == "setSRead") {
-		            response["I3_nameRead"] = 1;
-		        }
-		        if (Scenario == "setColor") {
-		            if (request["I3_color"])
-		                response["I3_colorBgColor"] = request["I3_color"];
-		        }
-		        if (Scenario == "setBlackColor") {
-                    response["I3_colorBgColor"] = "black";
-		        }
-		        if (Scenario == "setList") {
-		            response["I3_selectList"] = I3_data;
-		            if (request["I3_select"] && I3_data2[request["I3_select"]]) {
-		                response["I3_selectList"] = I3_data2[request["I3_select"]];
-		            }
-		        }
+			//動態選單
+			var I3_data = [{'key':'Taipei','value':'台北'}
+						  ,{'key':'Taoyuan','value':'桃園'}
+						  ,{'key':'NewNorthCity','value':'新北市'}];
+			var I3_data2 = {'Taipei':['大同區','大安區','萬華區']
+						   ,'Taoyuan':['桃園區','大溪區','中壢區']
+						   ,'NewNorthCity':['永和區','板橋區','新店區']};
 
-		        advAjaxSetResponse(Scenario, response);
-		    }
+			function I3_example_List(Scenario) {
+				var request = advAjaxGetRequest(Scenario);
+				var response = {};
+				if (Scenario == "setList") {
+					response["I3_selectList"] = I3_data;
+					response["I3_select"] = "NewNorthCity";
+					if (request["I3_select"] && I3_data2[request["I3_select"]]) {
+						response["I3_selectList"] = I3_data2[request["I3_select"]];
+					}
+				}
+				response["I3_selectSelText"] = request["I3_selectSelText"];
+				advAjaxSetResponse(Scenario, response);
+			}
 
 		    function I5_example(Scenario) {
 		        var errList = advConfigCheck(Scenario);
@@ -323,6 +342,9 @@
         .bs-callout-info {
             border-left-color: #5bc0de;
         }
+		.bs-callout-danger {
+			border-left-color: #d9534f;
+		}
         .scrollit {
             overflow-y: scroll;
             overflow-x: hidden;
@@ -517,75 +539,144 @@ alert('姓名 = ' + request["name"] + "\n"
 <span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('add')"</span><span class="nt">&gt;</span>新增<span class="nt">&lt;/button&gt;</span>
 <span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('update')"</span><span class="nt">&gt;</span>更新<span class="nt">&lt;/button&gt;</span>
 <span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('delete')"</span><span class="nt">&gt;</span>刪除<span class="nt">&lt;/button&gt;</span>
-// 每段範例程式都會有模擬從server端傳來的資料
-// 可預設查到二筆資料TOM與SAM
-<span class="nt">var</span> I2_data =
-    [
-      { 'I2_name':'TOM'
-      , 'I2_phone':'12345678'
-      , 'I2_addr':'New 9RD Taipei'}
-
-    , { 'I2_name':'SAM'
-      , 'I2_phone':'87654321'
-      , 'I2_addr':'No.2, Yongkang St Taipei'}
-    ];
-
-
-function I2_example(Scenario) {
-    <span class="nt">var</span> request = <span class="s">advAjaxGetRequest</span>(Scenario);
-    if (Scenario == "query") {
-    // 模擬後端查詢
-        <span class="nt">var</span> query;
-        for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
-        {
-            if (I2_data[i] &amp;&amp; I2_data[i].I2_name == request["I2_name"]) {
-                query = I2_data[i];
-            }
-        }
-    // 查詢END
-
-    // 將查詢的資料顯示到畫面上
-        if (query) {
-            <span class="s">advAjaxSetResponse</span>("query", query);
-            <span class="s">advConfigShowErrorMessage</span>("查詢成功", 0);
-        }
-        else
-            <span class="s">advConfigShowErrorMessage</span>("查無資料", -1);
-    }
-    else if (Scenario == "add") {
-    // 模擬後端新增資料
-        <span class="nt">var</span> i = I2_data.length;
-        I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
-        <span class="s">advConfigShowErrorMessage</span>("新增完成", 0);
-    }
-    else if (Scenario == "update") {
-    // 模擬後端更新資料
-        <span class="s">advConfigShowErrorMessage</span>("無更新資料", -1);
-        for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
-        {
-            if (I2_data[i].I2_name == request["I2_name"]) {
-                I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
-                <span class="s">advConfigShowErrorMessage</span>("更新完成", 0);
-                return false;
-            }
-        }
-    }
-    else if (Scenario == "delete") {
-        for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
-        {
-            if (I2_data[i] &amp;&amp; I2_data[i].I2_name == request["I2_name"]) {
-                delete I2_data[i];
-                // 此時request={}，advAjax還是會依劇本去處理所有元件
-                // 所以會將所有元件資料清空
-                <span class="s">advAjaxSetResponse</span>("delete", request);
-                return false;
-            }
-        }
-    }
-}
                     </code>
                 </pre>
             </div>
+<!-- HTML generated using hilite.me -->
+<div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+<table><tr><td>
+<pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</pre></td>
+<td>
+<pre style="margin: 0; line-height: 125%">    <span style="color: #008800; font-style: italic">// 每段範例程式都會有模擬從server端傳來的資料</span>
+    <span style="color: #008800; font-style: italic">// 可預設查到二筆資料TOM與SAM</span>
+    
+    <span style="color: #AA22FF; font-weight: bold">var</span> I2_data <span style="color: #666666">=</span>
+        [
+          { <span style="color: #BB4444">&#39;I2_name&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;TOM&#39;</span>
+          , <span style="color: #BB4444">&#39;I2_phone&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;12345678&#39;</span>
+          , <span style="color: #BB4444">&#39;I2_addr&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;New 9RD Taipei&#39;</span>}
+        , { <span style="color: #BB4444">&#39;I2_name&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;SAM&#39;</span>
+          , <span style="color: #BB4444">&#39;I2_phone&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;87654321&#39;</span>
+          , <span style="color: #BB4444">&#39;I2_addr&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;No.2, Yongkang St Taipei&#39;</span>}
+        ]
+   ;
+
+    <span style="color: #AA22FF; font-weight: bold">function</span> I2_example(Scenario) {
+        <span style="color: #AA22FF; font-weight: bold">var</span> request <span style="color: #666666">=</span> advAjaxGetRequest(Scenario);
+        <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;query&quot;</span>) {
+        <span style="color: #008800; font-style: italic">// 模擬後端查詢</span>
+            <span style="color: #AA22FF; font-weight: bold">var</span> query;
+            <span style="color: #AA22FF; font-weight: bold">for</span> (<span style="color: #AA22FF; font-weight: bold">var</span> i <span style="color: #666666">=</span> <span style="color: #666666">0</span> ; i <span style="color: #666666">&lt;</span> I2_data.length ; i<span style="color: #666666">++</span>)
+            {
+                <span style="color: #AA22FF; font-weight: bold">if</span> (I2_data[i] <span style="color: #666666">&amp;&amp;</span> I2_data[i].I2_name <span style="color: #666666">==</span> request[<span style="color: #BB4444">&quot;I2_name&quot;</span>]) {
+                    query <span style="color: #666666">=</span> I2_data[i];
+                }
+            }
+        <span style="color: #008800; font-style: italic">// 查詢END</span>
+        <span style="color: #008800; font-style: italic">// 將查詢的資料顯示到畫面上</span>
+            <span style="color: #AA22FF; font-weight: bold">if</span> (query) {
+                advAjaxSetResponse(<span style="color: #BB4444">&quot;query&quot;</span>, query);
+                advConfigShowErrorMessage(<span style="color: #BB4444">&quot;查詢成功&quot;</span>, <span style="color: #666666">0</span>);
+            }
+            <span style="color: #AA22FF; font-weight: bold">else</span>
+                advConfigShowErrorMessage(<span style="color: #BB4444">&quot;查無資料&quot;</span>, <span style="color: #666666">-1</span>);
+        }
+        <span style="color: #AA22FF; font-weight: bold">else</span> <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;add&quot;</span>) {
+            <span style="color: #AA22FF; font-weight: bold">var</span> i <span style="color: #666666">=</span> I2_data.length;
+            I2_data[i] <span style="color: #666666">=</span> {<span style="color: #BB4444">&#39;I2_name&#39;</span> <span style="color: #666666">:</span> request[<span style="color: #BB4444">&quot;I2_name&quot;</span>], <span style="color: #BB4444">&#39;I2_phone&#39;</span> <span style="color: #666666">:</span> request[<span style="color: #BB4444">&quot;I2_phone&quot;</span>], <span style="color: #BB4444">&#39;I2_addr&#39;</span> <span style="color: #666666">:</span>request[<span style="color: #BB4444">&quot;I2_addr&quot;</span>]};
+            advConfigShowErrorMessage(<span style="color: #BB4444">&quot;新增完成&quot;</span>, <span style="color: #666666">0</span>);
+        }
+        <span style="color: #AA22FF; font-weight: bold">else</span> <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;update&quot;</span>) {
+            advConfigShowErrorMessage(<span style="color: #BB4444">&quot;無更新資料&quot;</span>, <span style="color: #666666">-1</span>);
+            <span style="color: #AA22FF; font-weight: bold">for</span> (<span style="color: #AA22FF; font-weight: bold">var</span> i <span style="color: #666666">=</span> <span style="color: #666666">0</span> ; i <span style="color: #666666">&lt;</span> I2_data.length ; i<span style="color: #666666">++</span>)
+            {
+                <span style="color: #AA22FF; font-weight: bold">if</span> (I2_data[i] <span style="color: #666666">&amp;&amp;</span> I2_data[i].I2_name <span style="color: #666666">==</span> request[<span style="color: #BB4444">&quot;I2_name&quot;</span>]) {
+                    I2_data[i] <span style="color: #666666">=</span> {<span style="color: #BB4444">&#39;I2_name&#39;</span> <span style="color: #666666">:</span> request[<span style="color: #BB4444">&quot;I2_name&quot;</span>], <span style="color: #BB4444">&#39;I2_phone&#39;</span> <span style="color: #666666">:</span> request[<span style="color: #BB4444">&quot;I2_phone&quot;</span>], <span style="color: #BB4444">&#39;I2_addr&#39;</span> <span style="color: #666666">:</span>request[<span style="color: #BB4444">&quot;I2_addr&quot;</span>]};
+                    advConfigShowErrorMessage(<span style="color: #BB4444">&quot;更新完成&quot;</span>, <span style="color: #666666">0</span>);
+                    <span style="color: #AA22FF; font-weight: bold">return</span> <span style="color: #AA22FF; font-weight: bold">false</span>;
+                }
+            }
+        }
+        <span style="color: #AA22FF; font-weight: bold">else</span> <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;delete&quot;</span>) {
+            advConfigShowErrorMessage(<span style="color: #BB4444">&quot;無刪除資料&quot;</span>, <span style="color: #666666">-1</span>);
+            <span style="color: #AA22FF; font-weight: bold">for</span> (<span style="color: #AA22FF; font-weight: bold">var</span> i <span style="color: #666666">=</span> <span style="color: #666666">0</span> ; i <span style="color: #666666">&lt;</span> I2_data.length ; i<span style="color: #666666">++</span>)
+            {
+                <span style="color: #AA22FF; font-weight: bold">if</span> (I2_data[i].I2_name <span style="color: #666666">==</span> request[<span style="color: #BB4444">&quot;I2_name&quot;</span>]) {
+                    <span style="color: #AA22FF; font-weight: bold">delete</span> I2_data[i];
+                    <span style="color: #008800; font-style: italic">// 此時request={}，advAjax還是會依劇本去處理所有元件</span>
+                    <span style="color: #008800; font-style: italic">// 所以會將所有元件資料清空</span>
+                    advAjaxSetResponse(<span style="color: #BB4444">&quot;delete&quot;</span>, request);
+                    advConfigShowErrorMessage(<span style="color: #BB4444">&quot;刪除完成&quot;</span>, <span style="color: #666666">0</span>);
+                    <span style="color: #AA22FF; font-weight: bold">return</span> <span style="color: #AA22FF; font-weight: bold">false</span>;
+                }
+            }
+        }
+    }
+</pre></td></tr></table></div>
 
             <div class="bs-callout bs-callout-info">
                 <h3>劇本設定</h3>
@@ -620,8 +711,8 @@ function I2_example(Scenario) {
                                 <input type="checkbox" name="I3_nameRead">
                                 <div class="acod">bi:setRead</div>
                             </div>
-                            <button type="button" class="btn btn-default" onclick="I3_example('setRead')">設定或取消唯讀</button>
-                            <button type="button" class="btn btn-default" onclick="I3_example('setSRead')">強制唯讀</button>
+                            <button type="button" class="btn btn-default" onclick="I3_example_Read('setRead')">設定或取消唯讀</button>
+                            <button type="button" class="btn btn-default" onclick="I3_example_Read('setSRead')">強制唯讀</button>
                         </form>
 
                 </div>
@@ -637,30 +728,46 @@ function I2_example(Scenario) {
 <span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>bi:setRead<span class="nt">&lt;/div</span><span class="nt">&gt;</span>
 <span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setRead')"</span><span class="nt">&gt;</span>設定或取消唯讀<span class="nt">&lt;/button&gt;</span>
 <span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setSRead')"</span><span class="nt">&gt;</span>強制唯讀<span class="nt">&lt;/button&gt;</span>
-
-function I3_example(Scenario) {
-    var request = advAjaxGetRequest(Scenario);
-    var response = {};
-    if (Scenario == "setRead") {
-        response = request;
-    }
-    if (Scenario == "setSRead") {
-        response["I3_nameRead"] = 1;
-    }
-    advAjaxSetResponse(Scenario, response);
-}
                     </code>
                 </pre>
             </div>
 
-            <div class="bs-callout bs-callout-warning">
-                <h3>執行方式</h3>
-                <p>前端增加元素與欲設定唯讀欄位名稱相同後面加上<code>Read</code>，如下</p>
-                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"text"</span><span class="na"> name=</span><span class="s">"{FieldName}"</span><span class="nt">&gt;</span></li>
-                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"{type}"</span><span class="na"> name=</span><span class="s">"{FieldName}Read"</span><span class="nt">&gt;</span></li>
-                <p>當該欄位為true時，執行advAjaxSetResponse會設定目標欄位為唯讀</p>
-                <p>亦可在執行後端程式後在Response中放入唯讀參數</p>
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #AA22FF; font-weight: bold">function</span> I3_example_Read(Scenario) {
+    <span style="color: #AA22FF; font-weight: bold">var</span> request <span style="color: #666666">=</span> advAjaxGetRequest(Scenario);
+    <span style="color: #AA22FF; font-weight: bold">var</span> response <span style="color: #666666">=</span> {};
+    <span style="color: #008800; font-style: italic">// 摸擬後端設定為唯續</span>
+    <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;setRead&quot;</span>) {
+        response <span style="color: #666666">=</span> request;
+    }
+    <span style="color: #008800; font-style: italic">// 強制唯續</span>
+    <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;setSRead&quot;</span>) {
+        response[<span style="color: #BB4444">&quot;I3_nameRead&quot;</span>] <span style="color: #666666">=</span> <span style="color: #666666">1</span>;
+    }
+    advAjaxSetResponse(Scenario, response);
+}
+</pre></td></tr></table></div>
+			
+            <div class="bs-callout bs-callout-info">
+                <h3>劇本設定</h3>
+                <p>在劇本名稱後指定參數<code>read</code>，如下</p>
+                <li><code>bi:{Scenario}(read)</code></li>
+                <p>被指定的元素在接收到資料格式及值為true時自動設定為唯續</p>
                 <li><code>response["{FieldName}Read"] = 1</code></li>
+				<p>目前適用於 input type = [text|textarea]</p>
+				<p>該範例可看到checkbox的<code>name="I3_nameRead"</code>與格式相符，因此只要勾選checkbox時值即為true</p>
+				<p>取消勾選後元素就會取消ReadOnly</p>
             </div>
 
             <div class="row">
@@ -669,10 +776,10 @@ function I3_example(Scenario) {
                         <div class="form-group">
                             <label>設定背景顏色</label>
                             <input type="text" class="form-control" name="I3_color">
-                            <div class="acod">bi:setColor(value,bgColor)</div>
+                            <div class="acod">bi:setColor(value,bgColor) fr:setBlackColor(bgColor)</div>
                         </div>
-                        <button type="button" class="btn btn-default" onclick="I3_example('setColor')">設定欄位為輸入顏色</button>
-                        <button type="button" class="btn btn-default" onclick="I3_example('setBlackColor')">後端設定為黑色</button>
+                        <button type="button" class="btn btn-default" onclick="I3_example_Color('setColor')">設定欄位為輸入顏色</button>
+                        <button type="button" class="btn btn-default" onclick="I3_example_Color('setBlackColor')">後端設定為黑色</button>
                     </form>
                 </div>
             </div>
@@ -684,28 +791,44 @@ function I3_example(Scenario) {
 <span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"text"</span><span class="na"> name=</span><span class="s">"I3_color"</span><span class="nt">&gt;</span>
 <span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>bi:setColor(value,bgColor)<span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setColor')"</span><span class="nt">&gt;</span>設定欄位為輸入顏色<span class="nt">&lt;/button&gt;</span>
-
-function I3_example(Scenario) {
-    var request = advAjaxGetRequest(Scenario);
-    var response = {};
-    if (Scenario == "setColor") {
-	    if (request["I3_color"])
-	        response["I3_colorBgColor"] = request["I3_color"];
-	}
-    advAjaxSetResponse(Scenario, response);
-}
                     </code>
                 </pre>
             </div>
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #AA22FF; font-weight: bold">function</span> I3_example_Color(Scenario) {
+    <span style="color: #AA22FF; font-weight: bold">var</span> request <span style="color: #666666">=</span> advAjaxGetRequest(Scenario);
+    <span style="color: #AA22FF; font-weight: bold">var</span> response <span style="color: #666666">=</span> {};
+    <span style="color: #008800; font-style: italic">// 設定為輸入的顏色</span>
+	<span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;setColor&quot;</span>) {
+        <span style="color: #AA22FF; font-weight: bold">if</span> (request[<span style="color: #BB4444">&quot;I3_color&quot;</span>])
+            response[<span style="color: #BB4444">&quot;I3_colorBgColor&quot;</span>] <span style="color: #666666">=</span> request[<span style="color: #BB4444">&quot;I3_color&quot;</span>];
+    }
+    <span style="color: #008800; font-style: italic">// 摸擬後端指定黑色</span>
+    <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;setBlackColor&quot;</span>) {
+        response[<span style="color: #BB4444">&quot;I3_colorBgColor&quot;</span>] <span style="color: #666666">=</span> <span style="color: #BB4444">&quot;black&quot;</span>;
+    }
+    advAjaxSetResponse(Scenario, response);
+}
+</pre></td></tr></table></div>
 
-            <div class="bs-callout bs-callout-warning">
-                <h3>執行方式</h3>
-                <p>前端增加元素與欲設定唯讀欄位名稱相同後面加上<code>Read</code>，如下</p>
-                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"text"</span><span class="na"> name=</span><span class="s">"{FieldName}"</span><span class="nt">&gt;</span></li>
-                <li><span class="nt">&lt;input</span><span class="na"> type=</span><span class="s">"{type}"</span><span class="na"> name=</span><span class="s">"{FieldName}Read"</span><span class="nt">&gt;</span></li>
-                <p>當該欄位為true時，執行advAjaxSetResponse會設定目標欄位為唯讀</p>
-                <p>亦可在執行後端程式後在Response中放入唯讀參數</p>
-                <li><code>response["{FieldName}Read"] = 1</code></li>
+            <div class="bs-callout bs-callout-info">
+                <h3>劇本設定</h3>
+                <p>在劇本名稱後指定參數<code>bgColor</code>，如下</p>
+                <li><code>bi:{Scenario}(bgColor)</code></li>
+                <p>被指定的元素在接收到資料為下列格式時自動將背景顏色上色</p>
+                <li><code>response["{FieldName}BgColor"] = "black"</code></li>
             </div>
 
             <div class="row">
@@ -722,7 +845,7 @@ function I3_example(Scenario) {
                                 <label name="I3_selectSelText"></label>
                                 <div class="acod">fr:setList</div>
                             </div>
-                            <button type="button" class="btn btn-default" onclick="I3_example('setList')">執行</button>
+                            <button type="button" class="btn btn-default" onclick="I3_example_List('setList')">執行</button>
                         </form>
 
                 </div>
@@ -737,28 +860,74 @@ function I3_example(Scenario) {
 <span class="nt">&lt;label</span><span class="na"> name=</span><span class="s">"I3_selectSelText"</span><span class="nt">&gt;</span><span class="nt">&lt;/label&gt;</span>
 <span class="nt">&lt;div</span><span class="na"> class=</span><span class="s">"acod"</span><span class="nt">&gt;</span>fr:setList<span class="nt">&lt;/div&gt;</span>
 <span class="nt">&lt;button</span><span class="na"> type=</span><span class="s">"button"</span><span class="na"> onclick=</span><span class="s">"I3_example('setList')"</span><span class="nt">&gt;</span>執行<span class="nt">&lt;/button&gt;</span>
-
-var I3_data = [{'key':'Taipei','value':'台北'}
-              ,{'key':'Taoyuan','value':'桃園'}
-              ,{'key':'NewNorthCity','value':'新北市'}];
-
-var I3_data2 = {'Taipei':['大同區','大安區','萬華區']
-               ,'Taoyuan':['桃園區','大溪區','中壢區']
-               ,'NewNorthCity':['永和區','板橋區','新店區']};
-
-function I3_example(Scenario) {
-    var request = advAjaxGetRequest(Scenario);
-    request["I3_selectList"] = I3_data;
-    if (request["I3_select"] &amp;&amp; I3_data2[request["I3_select"]]) {
-        request["I3_selectList"] = I3_data2[request["I3_select"]];
-    }
-    advAjaxSetResponse(Scenario, request);
-}
                     </code>
                 </pre>
             </div>
+<!-- HTML generated using hilite.me --><div style="background: #f8f8f8; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><table><tr><td><pre style="margin: 0; line-height: 125%"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></td><td><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-style: italic">// 摸擬從後端取得的清單資料</span>
+<span style="color: #AA22FF; font-weight: bold">var</span> I3_data <span style="color: #666666">=</span> [{<span style="color: #BB4444">&#39;key&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;Taipei&#39;</span>,<span style="color: #BB4444">&#39;value&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;台北&#39;</span>}
+              ,{<span style="color: #BB4444">&#39;key&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;Taoyuan&#39;</span>,<span style="color: #BB4444">&#39;value&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;桃園&#39;</span>}
+              ,{<span style="color: #BB4444">&#39;key&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;NewNorthCity&#39;</span>,<span style="color: #BB4444">&#39;value&#39;</span><span style="color: #666666">:</span><span style="color: #BB4444">&#39;新北市&#39;</span>}];
+<span style="color: #AA22FF; font-weight: bold">var</span> I3_data2 <span style="color: #666666">=</span> {<span style="color: #BB4444">&#39;Taipei&#39;</span><span style="color: #666666">:</span>[<span style="color: #BB4444">&#39;大同區&#39;</span>,<span style="color: #BB4444">&#39;大安區&#39;</span>,<span style="color: #BB4444">&#39;萬華區&#39;</span>]
+               ,<span style="color: #BB4444">&#39;Taoyuan&#39;</span><span style="color: #666666">:</span>[<span style="color: #BB4444">&#39;桃園區&#39;</span>,<span style="color: #BB4444">&#39;大溪區&#39;</span>,<span style="color: #BB4444">&#39;中壢區&#39;</span>]
+               ,<span style="color: #BB4444">&#39;NewNorthCity&#39;</span><span style="color: #666666">:</span>[<span style="color: #BB4444">&#39;永和區&#39;</span>,<span style="color: #BB4444">&#39;板橋區&#39;</span>,<span style="color: #BB4444">&#39;新店區&#39;</span>]};
+
+<span style="color: #AA22FF; font-weight: bold">function</span> I3_example_List(Scenario) {
+    <span style="color: #AA22FF; font-weight: bold">var</span> request <span style="color: #666666">=</span> advAjaxGetRequest(Scenario);
+    <span style="color: #AA22FF; font-weight: bold">var</span> response <span style="color: #666666">=</span> {};
+    <span style="color: #AA22FF; font-weight: bold">if</span> (Scenario <span style="color: #666666">==</span> <span style="color: #BB4444">&quot;setList&quot;</span>) {
+        <span style="color: #008800; font-style: italic">// 第一次按下執行將市名匯到選單中</span>
+        response[<span style="color: #BB4444">&quot;I3_selectList&quot;</span>] <span style="color: #666666">=</span> I3_data;
+        <span style="color: #008800; font-style: italic">// 也可以指定預設key值</span>
+        response[<span style="color: #BB4444">&quot;I3_select&quot;</span>] <span style="color: #666666">=</span> <span style="color: #BB4444">&quot;NewNorthCity&quot;</span>;
+        <span style="color: #008800; font-style: italic">// 選擇城市後將地區匯到選單中</span>
+        <span style="color: #AA22FF; font-weight: bold">if</span> (request[<span style="color: #BB4444">&quot;I3_select&quot;</span>] <span style="color: #666666">&amp;&amp;</span> I3_data2[request[<span style="color: #BB4444">&quot;I3_select&quot;</span>]]) {
+            response[<span style="color: #BB4444">&quot;I3_selectList&quot;</span>] <span style="color: #666666">=</span> I3_data2[request[<span style="color: #BB4444">&quot;I3_select&quot;</span>]];
+        }
+    }
+    <span style="color: #008800; font-style: italic">// 將選到的值顯示出來</span>
+    response[<span style="color: #BB4444">&quot;I3_selectSelText&quot;</span>] <span style="color: #666666">=</span> request[<span style="color: #BB4444">&quot;I3_selectSelText&quot;</span>];
+    advAjaxSetResponse(Scenario, response);
+}
+</pre></td></tr></table></div>
+
             <div class="bs-callout bs-callout-info">
-                <h3>元素屬性設定</h3>
+                <h3>劇本設定</h3>
+                <p>在劇本名稱後指定參數<code>list</code>，如下</p>
+                <li><code>bi:{Scenario}(list)</code></li>
+                <p>被指定的元素在接收到資料為下列格式時自動將資料匯入清單中</p>
+                <li><code>response["{FieldName}List"] = {listData}</code></li>
+				<p>指定參數<code>selText</code>可在執行收集命令時取得選單的value值，預設回傳選單key值</p>
+				<li><code>bi:{Scenario}(selText)</code></li>
+				<li>收集的資料會放在格式<code>request["{FieldName}SelText"]</code>中</li>
+				<li>預設是放在<code>request["{FieldName}"]</code>中，資料為key值</li>
+            </div>
+
+            <div class="bs-callout bs-callout-danger">
+                <h3>元素屬性設定<總結></h3>
                 <li><code>read</code>: 自動產生{name}Read資料Request該元素是否為唯讀，Response將{name}Read為true時該元素設定為唯讀。</li>
                 <li><code>bgColor</code>: 自動產生{name}BgColor資料Request該元素背景色RGB代碼。Response時為設定該元素背景色。</li>
                 <li><code>selText</code>: 自動產生{name}SelText資料Request該元素選定值，Response時可預設選單選項。</li>
