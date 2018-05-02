@@ -364,9 +364,9 @@
     		<div class="highlight">
         	    <pre>
         	        <code>
-<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advconfig.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advajax.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
-<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advgrid.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advconfig.js"</span><span class="nt">&gt;&lt;/script&gt; //找到所有被註冊為ACOD的元件 </span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advajax.js"</span><span class="nt">&gt;&lt;/script&gt; //基於jQuery程式，依使用者設定情境達到基本的UI效果 </span>
+<span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advgrid.js"</span><span class="nt">&gt;&lt;/script&gt; //進階的advajax，專門處理Grid的部份 </span>
 <span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advpane.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advdecl.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
 <span class="nt">&lt;script</span><span class="na"> src=</span><span class="s">"js/advbtn.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
@@ -517,12 +517,14 @@ alert('姓名 = ' + request["name"] + "\n"
 <span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('add')"</span><span class="nt">&gt;</span>新增<span class="nt">&lt;/button&gt;</span>
 <span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('update')"</span><span class="nt">&gt;</span>更新<span class="nt">&lt;/button&gt;</span>
 <span class="nt">&lt;button </span><span class="na">onclick=</span><span class="s">"I2_example('delete')"</span><span class="nt">&gt;</span>刪除<span class="nt">&lt;/button&gt;</span>
-
+// 每段範例程式都會有模擬從server端傳來的資料
+// 可預設查到二筆資料TOM與SAM
 <span class="nt">var</span> I2_data =
     [
       { 'I2_name':'TOM'
       , 'I2_phone':'12345678'
       , 'I2_addr':'New 9RD Taipei'}
+
     , { 'I2_name':'SAM'
       , 'I2_phone':'87654321'
       , 'I2_addr':'No.2, Yongkang St Taipei'}
@@ -532,6 +534,7 @@ alert('姓名 = ' + request["name"] + "\n"
 function I2_example(Scenario) {
     <span class="nt">var</span> request = <span class="s">advAjaxGetRequest</span>(Scenario);
     if (Scenario == "query") {
+    // 模擬後端查詢
         <span class="nt">var</span> query;
         for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
         {
@@ -539,18 +542,31 @@ function I2_example(Scenario) {
                 query = I2_data[i];
             }
         }
-        if (query)
+    // 查詢END
+
+    // 將查詢的資料顯示到畫面上
+        if (query) {
             <span class="s">advAjaxSetResponse</span>("query", query);
+            <span class="s">advConfigShowErrorMessage</span>("查詢成功", 0);
+        }
+        else
+            <span class="s">advConfigShowErrorMessage</span>("查無資料", -1);
     }
     else if (Scenario == "add") {
+    // 模擬後端新增資料
         <span class="nt">var</span> i = I2_data.length;
         I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
+        <span class="s">advConfigShowErrorMessage</span>("新增完成", 0);
     }
     else if (Scenario == "update") {
+    // 模擬後端更新資料
+        <span class="s">advConfigShowErrorMessage</span>("無更新資料", -1);
         for (<span class="nt">var</span> i = 0 ; i &lt; I2_data.length ; i++)
         {
             if (I2_data[i].I2_name == request["I2_name"]) {
                 I2_data[i] = {'I2_name' : request["I2_name"], 'I2_phone' : request["I2_phone"], 'I2_addr' :request["I2_addr"]};
+                <span class="s">advConfigShowErrorMessage</span>("更新完成", 0);
+                return false;
             }
         }
     }
@@ -559,6 +575,8 @@ function I2_example(Scenario) {
         {
             if (I2_data[i] &amp;&amp; I2_data[i].I2_name == request["I2_name"]) {
                 delete I2_data[i];
+                // 此時request={}，advAjax還是會依劇本去處理所有元件
+                // 所以會將所有元件資料清空
                 <span class="s">advAjaxSetResponse</span>("delete", request);
                 return false;
             }
@@ -598,7 +616,7 @@ function I2_example(Scenario) {
                         </div>
 
                         <div class="form-group">
-                                <label>設為欄位唯讀</label>
+                                <label>當後端指定欄位為唯讀</label>
                                 <input type="checkbox" name="I3_nameRead">
                                 <div class="acod">bi:setRead</div>
                             </div>
